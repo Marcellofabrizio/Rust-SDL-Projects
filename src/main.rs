@@ -5,6 +5,7 @@ use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use sdl2::mouse::MouseState;
 use std::time::Duration;
 
 fn ipart(x: f32) -> i32 {
@@ -16,7 +17,7 @@ fn round(x: f32) -> i32 {
 }
 
 fn fpart(x: f32) -> f32 {
-    x - x.floor()
+    x - ipart(x) as f32
 }
 
 fn rfpart(x: f32) -> f32 {
@@ -33,13 +34,13 @@ fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
         .expect("Drawing point failed");
 }
 
-pub fn wu_line(x1: i32, y1: i32, x2: i32, y2: i32, canvas: &mut Canvas<Window>) {
-    let steep = i32::abs(y2 - y1) > i32::abs(x2 - x1);
+pub fn wu_line(p_start: Point, p_end: Point, canvas: &mut Canvas<Window>) {
+    let steep = i32::abs(p_end.y - p_start.y) > i32::abs(p_end.x - p_start.x);
 
     let (x1, y1, x2, y2) = if steep {
-        (y1, x1, y2, x2)
+        (p_start.y, p_start.x, p_end.y, p_end.x)
     } else {
-        (x1, y1, x2, y2)
+        (p_start.x, p_start.y, p_end.x, p_end.y)
     };
 
     let (x1, x2, y1, y2) = if x1 > x2 {
@@ -57,45 +58,23 @@ pub fn wu_line(x1: i32, y1: i32, x2: i32, y2: i32, canvas: &mut Canvas<Window>) 
     }
 
     let mut x_end = round(x1 as f32);
-    let mut y_end = y1 as f32 + gradient * (x_end - x1) as f32;
-    let mut x_gap = rfpart(x1 as f32 + 0.5);
+    let y_end = y1 as f32 + gradient * (x_end - x1) as f32;
     let xpxl1 = x_end as i32;
-    let ypxl1 = ipart(y_end);
-
-    if steep {
-        draw_point(ypxl1, xpxl1, rfpart(y_end) * x_gap, canvas);
-        draw_point(ypxl1 + 1, xpxl1, fpart(y_end) * x_gap, canvas);
-    } else {
-        draw_point(xpxl1, ypxl1, rfpart(y_end) * x_gap, canvas);
-        draw_point(xpxl1, ypxl1 + 1, fpart(y_end) * x_gap, canvas);
-    }
-
     let mut intery = y_end + gradient;
 
     x_end = round(x2 as f32);
-    y_end = y2 as f32 + gradient * (x_end - x2) as f32;
-    x_gap = rfpart(x2 as f32 + 0.5);
     let xpxl2 = x_end as i32;
-    let ypxl2 = ipart(y_end);
 
     if steep {
-        draw_point(ypxl2, xpxl2, rfpart(y_end) * x_gap, canvas);
-        draw_point(ypxl2 + 1, xpxl2, fpart(y_end) * x_gap, canvas);
-    } else {
-        draw_point(xpxl2, ypxl2, rfpart(y_end) * x_gap, canvas);
-        draw_point(xpxl2, ypxl2 + 1, fpart(y_end) * x_gap, canvas);
-    }
-
-    if steep {
-        for x in (xpxl1 + 1)..xpxl2 {
+        for x in xpxl1..xpxl2 {
             draw_point(ipart(intery), x, rfpart(intery), canvas);
-            draw_point(ipart(intery) + 1, x, fpart(intery), canvas);
+            draw_point(ipart(intery) - 1, x, fpart(intery), canvas);
             intery += gradient;
         }
     } else {
         for x in (xpxl1 + 1)..xpxl2 {
             draw_point(x, ipart(intery), rfpart(intery), canvas);
-            draw_point(x, ipart(intery) + 1, fpart(intery), canvas);
+            draw_point(x, ipart(intery) - 1, fpart(intery), canvas);
             intery += gradient;
         }
     }
@@ -106,19 +85,21 @@ pub fn main() {
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem
-        .window("rust-sdl2 demo", 800, 600)
+        .window("rust-sdl2 demo", 640, 480)
         .position_centered()
         .build()
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
-    canvas.set_draw_color(Color::RGB(0, 0, 0));
     canvas.clear();
     canvas.present();
-
+    
     let mut event_pump = sdl_context.event_pump().unwrap();
-
+    
     'running: loop {
+        canvas.set_draw_color(Color::RGB(255, 255, 255));
+        canvas.clear();
+        
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -126,6 +107,10 @@ pub fn main() {
                     keycode: Some(Keycode::Escape),
                     ..
                 } => break 'running,
+                Event::MouseButtonDown { x, y, .. } => {
+                    println!("Mouse click at {x},{y}");
+                    wu_line(Point::new(10, 10), Point::new(x, y), &mut canvas);
+                }
                 Event::KeyDown {
                     keycode: Some(keycode),
                     ..
@@ -133,8 +118,12 @@ pub fn main() {
                 _ => {}
             }
         }
-        wu_line(100, 100, 700, 500, &mut canvas);
-        canvas.set_draw_color(Color::RGB(0, 0, 0));
+
+        let mouse_state = MouseState::new(&event_pump);
+        let mouse_x = mouse_state.x();
+        let mouse_y = mouse_state.y();
+        canvas.set_draw_color(Color::RGB(255, 255, 255));
+        wu_line(Point::new(10, 10), Point::new(mouse_x, mouse_y), &mut canvas);
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
