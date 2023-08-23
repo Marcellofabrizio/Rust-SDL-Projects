@@ -1,11 +1,10 @@
-use rand::Rng;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use sdl2::mouse::MouseState;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
-use sdl2::mouse::MouseState;
 use std::time::Duration;
 
 fn ipart(x: f32) -> i32 {
@@ -80,6 +79,21 @@ pub fn wu_line(p_start: Point, p_end: Point, canvas: &mut Canvas<Window>) {
     }
 }
 
+pub fn draw_wu_rect(p_1: Point, p_2: Point, canvas: &mut Canvas<Window>) {
+    wu_line(p_1, Point::new(p_1.x, p_2.y), canvas);
+    wu_line(p_1, Point::new(p_2.x, p_1.y), canvas);
+
+    wu_line(Point::new(p_1.x, p_2.y), p_2, canvas);
+    wu_line(p_2, Point::new(p_2.x, p_1.y), canvas);
+
+    for i in p_1.x..p_2.x {
+        for j in p_1.y..p_2.y {
+            draw_point(i, j, 255.0, canvas);
+        }
+    }
+
+}
+
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -93,13 +107,13 @@ pub fn main() {
     let mut canvas = window.into_canvas().build().unwrap();
     canvas.clear();
     canvas.present();
-    
+
     let mut event_pump = sdl_context.event_pump().unwrap();
-    
+
     'running: loop {
         canvas.set_draw_color(Color::RGB(255, 255, 255));
-        canvas.clear();
-        
+        // canvas.clear();
+
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -109,7 +123,7 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     println!("Mouse click at {x},{y}");
-                    wu_line(Point::new(10, 10), Point::new(x, y), &mut canvas);
+                    draw_wu_rect(Point::new(10, 10), Point::new(x, y), &mut canvas);
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),
@@ -119,11 +133,15 @@ pub fn main() {
             }
         }
 
-        let mouse_state = MouseState::new(&event_pump);
-        let mouse_x = mouse_state.x();
-        let mouse_y = mouse_state.y();
-        canvas.set_draw_color(Color::RGB(255, 255, 255));
-        wu_line(Point::new(10, 10), Point::new(mouse_x, mouse_y), &mut canvas);
+        // let mouse_state = MouseState::new(&event_pump);
+        // let mouse_x = mouse_state.x();
+        // let mouse_y = mouse_state.y();
+        // canvas.set_draw_color(Color::RGB(255, 255, 255));
+        // wu_line(
+        //     Point::new(10, 10),
+        //     Point::new(mouse_x, mouse_y),
+        //     &mut canvas,
+        // );
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
