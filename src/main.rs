@@ -7,6 +7,11 @@ use sdl2::render::Canvas;
 use sdl2::video::Window;
 use std::time::Duration;
 
+struct Rectangle {
+    point_1: Point,
+    point_2: Point,
+}
+
 fn ipart(x: f32) -> i32 {
     x.floor() as i32
 }
@@ -86,9 +91,24 @@ pub fn draw_wu_rect(p_1: Point, p_2: Point, canvas: &mut Canvas<Window>) {
     wu_line(Point::new(p_1.x, p_2.y), p_2, canvas);
     wu_line(p_2, Point::new(p_2.x, p_1.y), canvas);
 
-    for i in p_1.x..p_2.x {
-        for j in p_1.y..p_2.y {
-            draw_point(i, j, 255.0, canvas);
+    let x_is_reversed = p_2.x < p_1.x;
+    let y_is_reversed = p_2.y < p_1.y;
+
+    let (start_x, end_x) = if x_is_reversed {
+        (p_2.x, p_1.x)
+    } else {
+        (p_1.x, p_2.x)
+    };
+
+    let (start_y, end_y) = if y_is_reversed {
+        (p_2.y, p_1.y)
+    } else {
+        (p_1.y, p_2.y)
+    };
+
+    for i in start_x..end_x {
+        for j in start_y..end_y {
+            draw_point(i, j, 0.0, canvas);
         }
     }
 
@@ -110,9 +130,13 @@ pub fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
+    let mut rectangles: Vec<Rectangle> = Vec::new();
+    let mut start_point: Option<Point> = None;
+    let mut end_point: Option<Point> = None;
+
     'running: loop {
         canvas.set_draw_color(Color::RGB(255, 255, 255));
-        // canvas.clear();
+        canvas.clear();
 
         for event in event_pump.poll_iter() {
             match event {
@@ -123,7 +147,26 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     println!("Mouse click at {x},{y}");
-                    draw_wu_rect(Point::new(10, 10), Point::new(x, y), &mut canvas);
+
+                    if start_point.is_none() {
+                        start_point = Some(Point::new(x, y));
+                    } else if end_point.is_none() {
+                        end_point = Some(Point::new(x, y));
+                    }
+
+                    if start_point.is_some() && end_point.is_some() {
+                        // draw_wu_rect(start_point.unwrap(), end_point.unwrap(), &mut canvas);
+
+                        let rect = Rectangle {
+                            point_1: start_point.unwrap(),
+                            point_2: end_point.unwrap(),
+                        };
+
+                        rectangles.push(rect);
+
+                        start_point = None;
+                        end_point = None;
+                    }
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),
@@ -133,15 +176,9 @@ pub fn main() {
             }
         }
 
-        // let mouse_state = MouseState::new(&event_pump);
-        // let mouse_x = mouse_state.x();
-        // let mouse_y = mouse_state.y();
-        // canvas.set_draw_color(Color::RGB(255, 255, 255));
-        // wu_line(
-        //     Point::new(10, 10),
-        //     Point::new(mouse_x, mouse_y),
-        //     &mut canvas,
-        // );
+        for rect in rectangles.iter() {
+            draw_wu_rect(rect.point_1, rect.point_2, &mut canvas);
+        }
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
