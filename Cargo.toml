@@ -7,4 +7,8 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-sdl2 = { git = "https://github.com/Rust-SDL2/rust-sdl2" }
+
+[dependencies.sdl2]
+git = "https://github.com/rust-sdl2/rust-sdl2"
+default-features = false
+features = ["ttf","image","gfx","mixer"]
