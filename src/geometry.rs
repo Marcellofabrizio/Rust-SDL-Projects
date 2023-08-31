@@ -1,11 +1,13 @@
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use sdl2::mouse::MouseState;
+use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
-use std::time::Duration;
+
+pub struct BezierCurve {
+    pub controll_points: Vec<Point>,
+    pub color: f32,
+}
 
 pub struct Rectangle {
     pub point_1: Point,
@@ -117,7 +119,7 @@ pub fn draw_circle(center: Point, radius: i32, canvas: &mut Canvas<Window>) {
     let mut x: i32 = 0;
     let mut y: i32 = radius;
     let mut decision_param = 3 - 2 * radius;
-    display_circle(center, Point::new(x, y), canvas);
+    display_circle(center, Point::new(x, y), 0.0, canvas);
     while y >= x {
         x += 1;
         if decision_param > 0 {
@@ -127,62 +129,62 @@ pub fn draw_circle(center: Point, radius: i32, canvas: &mut Canvas<Window>) {
             decision_param = decision_param + 4 * x + 6;
         }
 
-        display_circle(center, Point::new(x, y), canvas);
+        display_circle(center, Point::new(x, y), 0.0, canvas);
     }
 }
 
-pub fn display_circle(center: Point, point_to_draw: Point, canvas: &mut Canvas<Window>) {
+fn display_circle(center: Point, point_to_draw: Point, color: f32, canvas: &mut Canvas<Window>) {
     draw_point(
         center.x + point_to_draw.x,
         center.y + point_to_draw.y,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x - point_to_draw.x,
         center.y + point_to_draw.y,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x + point_to_draw.x,
         center.y - point_to_draw.y,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x - point_to_draw.x,
         center.y - point_to_draw.y,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x + point_to_draw.y,
         center.y + point_to_draw.x,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x - point_to_draw.y,
         center.y + point_to_draw.x,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x + point_to_draw.y,
         center.y - point_to_draw.x,
-        0.0,
+        color,
         canvas,
     );
     draw_point(
         center.x - point_to_draw.y,
         center.y - point_to_draw.x,
-        0.0,
+        color,
         canvas,
     );
 }
 
-pub fn draw_bezier_curve(
+pub fn draw_cubic_bezier(
     p_1: Point,
     p_2: Point,
     p_3: Point,
@@ -204,4 +206,10 @@ pub fn draw_bezier_curve(
 
         draw_point(x_u as i32, y_u as i32, 0.0, canvas);
     }
+}
+
+pub fn draw_target(point: Point, canvas: &mut Canvas<Window>) {
+    canvas
+        .filled_circle(point.x as i16, point.y as i16, 5, Color::RGB(255, 0, 0))
+        .unwrap();
 }

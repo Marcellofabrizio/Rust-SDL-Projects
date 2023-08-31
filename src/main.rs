@@ -1,4 +1,5 @@
 use sdl2::event::Event;
+use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::keyboard::Keycode;
 use sdl2::mouse::MouseState;
 use sdl2::pixels::Color;
@@ -45,8 +46,9 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     println!("Mouse click at {x},{y}");
-
-                    control_points.push(Point::new(x, y));
+                    let clicked_point = Point::new(x, y);
+                    geometry::draw_target(clicked_point, &mut canvas);
+                    control_points.push(clicked_point);
                     current_point += 1;
                 }
                 Event::KeyDown {
@@ -61,13 +63,16 @@ pub fn main() {
             geometry::draw_wu_rect(rect.point_1, rect.point_2, &mut canvas);
         }
 
-        print!("{current_point}");
-        if current_point >= 4 {
-            geometry::draw_bezier_curve(
-                control_points[0],
-                control_points[1],
-                control_points[2],
-                control_points[3],
+        for point in control_points.iter() {
+            geometry::draw_target(*point, &mut canvas);
+        }
+
+        if current_point >= 4 && current_point % 4 == 0 {
+            geometry::draw_cubic_bezier(
+                control_points[current_point - 4],
+                control_points[current_point - 3],
+                control_points[current_point - 2],
+                control_points[current_point - 1],
                 &mut canvas,
             );
         }
