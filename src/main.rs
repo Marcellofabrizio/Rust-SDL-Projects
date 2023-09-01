@@ -1,11 +1,7 @@
 use sdl2::event::Event;
-use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::keyboard::Keycode;
-use sdl2::mouse::MouseState;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
-use sdl2::render::Canvas;
-use sdl2::video::Window;
 use std::time::Duration;
 
 mod geometry;
@@ -36,7 +32,6 @@ pub fn main() {
     canvas.set_draw_color(Color::RGB(255, 255, 255));
     canvas.clear();
     'running: loop {
-
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -80,13 +75,10 @@ pub fn main() {
         let x = 200;
         let y = 200;
 
-        geometry::draw_cubic_bezier(Point::new(x,y), Point::new(x, y-30), Point::new(x-50, y-30), Point::new(x-50, y), &mut canvas);
+        geometry::draw_heart(x, y, &mut canvas);
+        geometry::draw_heart(600, 440, &mut canvas);
 
-        geometry::draw_cubic_bezier(Point::new(x-50,y), Point::new(x-50, y + 30), Point::new(x, y+35), Point::new(x, y+60), &mut canvas);
-        
-        geometry::draw_cubic_bezier(Point::new(x,y+60), Point::new(x, y+35), Point::new(x+50, y+30), Point::new(x+50, y), &mut canvas);
-        
-        geometry::draw_cubic_bezier(Point::new(x+50,y), Point::new(x+50, y-30), Point::new(x, y-30), Point::new(x, y), &mut canvas);
+
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
