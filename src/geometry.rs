@@ -115,6 +115,53 @@ pub fn draw_wu_rect(p_1: Point, p_2: Point, canvas: &mut Canvas<Window>) {
     }
 }
 
+pub fn draw_line(p_1: Point, p_2: Point, canvas: &mut Canvas<Window>) {
+    let mut x0 = p_1.x;
+    let mut y0 = p_1.y;
+    let mut x1 = p_2.x;
+    let mut y1 = p_2.y;
+
+    let dx = (x1 - x0).abs();
+    let dy = (y1 - y0).abs();
+    let mut sx = 0;
+    let mut sy = 0;
+
+    if x0 < x1 {
+        sx = 1;
+    } else {
+        sx = -1;
+    }
+
+    if y0 < y1 {
+        sy = 1;
+    } else {
+        sy = -1;
+    }
+
+    let mut err = dx - dy;
+
+    loop {
+        canvas
+            .draw_point(Point::new(x0, y0))
+            .expect("Draw point failed");
+
+        if x0 == x1 && y0 == y1 {
+            break;
+        }
+
+        let e2 = 2 * err;
+        if e2 > -dy {
+            err -= dy;
+            x0 += sx;
+        }
+
+        if e2 < dx {
+            err += dx;
+            y0 += sy;
+        }
+    }
+}
+
 pub fn draw_circle(center: Point, radius: i32, canvas: &mut Canvas<Window>) {
     let mut x: i32 = 0;
     let mut y: i32 = radius;
