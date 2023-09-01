@@ -260,3 +260,37 @@ pub fn draw_target(point: Point, canvas: &mut Canvas<Window>) {
         .filled_circle(point.x as i16, point.y as i16, 5, Color::RGB(255, 0, 0))
         .unwrap();
 }
+
+pub fn draw_heart(x: i32, y: i32, canvas: &mut Canvas<Window>) {
+    draw_cubic_bezier(
+        Point::new(x, y),
+        Point::new(x, y - 30),
+        Point::new(x - 50, y - 30),
+        Point::new(x - 50, y),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(x - 50, y),
+        Point::new(x - 50, y + 30),
+        Point::new(x, y + 35),
+        Point::new(x, y + 60),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(x, y + 60),
+        Point::new(x, y + 35),
+        Point::new(x + 50, y + 30),
+        Point::new(x + 50, y),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(x + 50, y),
+        Point::new(x + 50, y - 30),
+        Point::new(x, y - 30),
+        Point::new(x, y),
+        canvas,
+    );
+}
