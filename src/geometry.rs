@@ -40,7 +40,7 @@ fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
         .expect("Drawing point failed");
 }
 
-pub fn wu_line(p_start: Point, p_end: Point, canvas: &mut Canvas<Window>) {
+pub fn draw_wu_line(p_start: Point, p_end: Point, canvas: &mut Canvas<Window>) {
     let steep = i32::abs(p_end.y - p_start.y) > i32::abs(p_end.x - p_start.x);
 
     let (x1, y1, x2, y2) = if steep {
@@ -87,11 +87,11 @@ pub fn wu_line(p_start: Point, p_end: Point, canvas: &mut Canvas<Window>) {
 }
 
 pub fn draw_wu_rect(p_1: Point, p_2: Point, canvas: &mut Canvas<Window>) {
-    wu_line(p_1, Point::new(p_1.x, p_2.y), canvas);
-    wu_line(p_1, Point::new(p_2.x, p_1.y), canvas);
+    draw_wu_line(p_1, Point::new(p_1.x, p_2.y), canvas);
+    draw_wu_line(p_1, Point::new(p_2.x, p_1.y), canvas);
 
-    wu_line(Point::new(p_1.x, p_2.y), p_2, canvas);
-    wu_line(p_2, Point::new(p_2.x, p_1.y), canvas);
+    draw_wu_line(Point::new(p_1.x, p_2.y), p_2, canvas);
+    draw_wu_line(p_2, Point::new(p_2.x, p_1.y), canvas);
 
     let x_is_reversed = p_2.x < p_1.x;
     let y_is_reversed = p_2.y < p_1.y;
