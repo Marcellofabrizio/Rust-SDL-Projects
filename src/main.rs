@@ -54,9 +54,11 @@ pub fn main() {
             }
         }
 
-        for rect in rectangles.iter() {
-            geometry::draw_wu_rect(rect.point_1, rect.point_2, &mut canvas);
-        }
+        let mut pois: Vec<Point> = Vec::new();
+        pois.push(Point::new(180, 200));
+        pois.push(Point::new(300, 120));
+        let rect = geometry::Rectangle::new(pois);
+        rect.draw(&mut canvas);
 
         for point in control_points.iter() {
             geometry::draw_target(*point, &mut canvas);
@@ -77,7 +79,6 @@ pub fn main() {
 
         geometry::draw_heart(x, y, &mut canvas);
         geometry::draw_heart(600, 440, &mut canvas);
-
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
