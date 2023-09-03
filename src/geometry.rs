@@ -3,6 +3,12 @@ use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+use sdl2::Error;
+
+pub trait Drawing {
+    fn new(&self);
+    fn draw(&self, canvas: &mut Canvas<Window>);
+}
 
 pub struct BezierCurve {
     pub controll_points: Vec<Point>,
@@ -10,8 +16,30 @@ pub struct BezierCurve {
 }
 
 pub struct Rectangle {
-    pub point_1: Point,
-    pub point_2: Point,
+    pub controll_points: Vec<Point>,
+}
+
+impl Rectangle {
+    pub fn new(points: Vec<Point>) -> Self {
+        Rectangle {
+            controll_points: points,
+        }
+    }
+
+    pub fn draw(&self, canvas: &mut Canvas<Window>) {
+        match self.controll_points.as_slice() {
+            [first, second, ..] => {
+                canvas.set_draw_color(Color::RGB(255, 0, 0));
+                draw_line(*first, Point::new(first.x, second.y), canvas);
+                draw_line(*first, Point::new(second.x, first.y), canvas);
+                draw_line(Point::new(first.x, second.y), *second, canvas);
+                draw_line(*second, Point::new(second.x, first.y), canvas);
+            }
+            _ => {
+                println!("Rectangle does not have all points");
+            }
+        }
+    }
 }
 
 fn ipart(x: f32) -> i32 {
@@ -34,7 +62,7 @@ fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
     let color_value = (c * 255.0) as u8;
     let color = Color::RGB(color_value, color_value, color_value);
 
-    canvas.set_draw_color(color);
+    // canvas.set_draw_color(color);
     canvas
         .draw_point(Point::new(x, y))
         .expect("Drawing point failed");
