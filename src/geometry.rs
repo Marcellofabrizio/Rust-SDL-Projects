@@ -15,6 +15,30 @@ pub struct BezierCurve {
     pub color: f32,
 }
 
+impl BezierCurve {
+    pub fn new(points: Vec<Point>, color: Option<f32>) -> Self {
+        BezierCurve {
+            controll_points: points,
+            color: color.unwrap_or(0.0),
+        }
+    }
+
+    pub fn draw(&self, canvas: &mut Canvas<Window>) {
+        if self.controll_points.len() < 4 {
+            println!("Not enough controll points for drawing");
+            return;
+        }
+
+        draw_cubic_bezier(
+            self.controll_points[0],
+            self.controll_points[1],
+            self.controll_points[2],
+            self.controll_points[3],
+            canvas,
+        );
+    }
+}
+
 pub struct Rectangle {
     pub controll_points: Vec<Point>,
 }
