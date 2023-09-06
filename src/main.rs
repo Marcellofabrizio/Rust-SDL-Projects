@@ -40,7 +40,6 @@ pub fn main() {
                     ..
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
-                    println!("Mouse click at {x},{y}");
                     let clicked_point = Point::new(x, y);
                     geometry::draw_target(clicked_point, &mut canvas);
                     control_points.push(clicked_point);
