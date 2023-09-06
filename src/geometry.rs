@@ -82,11 +82,22 @@ fn rfpart(x: f32) -> f32 {
     1.0 - fpart(x)
 }
 
-fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
-    let color_value = (c * 255.0) as u8;
-    let color = Color::RGB(color_value, color_value, color_value);
+fn get_color_component(color: u32, component: char) -> u8 {
+    match component {
+        'r' | 'R' => ((color >> 16) & 0xFFF) as u8,
+        'g' | 'G' => ((color >> 8) & 0xFFF) as u8,
+        'b' | 'B' => (color & 0xFFF) as u8,
+        _ => panic!("Invalid color component, use r, g or b"),
+    }
+}
 
-    // canvas.set_draw_color(color);
+fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
+    let r = get_color_component(c as u32, 'r');
+    let g = get_color_component(c as u32, 'g');
+    let b = get_color_component(c as u32, 'b');
+    let color = Color::RGB(r, g, b);
+
+    canvas.set_draw_color(color);
     canvas
         .draw_point(Point::new(x, y))
         .expect("Drawing point failed");
