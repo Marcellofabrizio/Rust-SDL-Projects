@@ -53,7 +53,7 @@ pub fn main() {
                         Point::new(x, y),
                         color.to_u32(unsafe {
                             &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
-                                PixelFormatEnum::ARGB8888 as u32,
+                                PixelFormatEnum::ARGB8888 as u32, // https://github.com/Rust-SDL2/rust-sdl2/issues/840
                             ))
                         }),
                         &mut canvas,
