@@ -1,6 +1,6 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::Color;
+use sdl2::pixels::{Color, PixelFormat, PixelFormatEnum};
 use sdl2::rect::Point;
 use std::time::Duration;
 
@@ -29,7 +29,7 @@ pub fn main() {
     let mut control_points: Vec<Point> = Vec::with_capacity(4);
     let mut current_point = 0;
 
-    canvas.set_draw_color(Color::RGB(255, 255, 255));
+    canvas.set_draw_color(Color::RGBA(255, 255, 255, 0));
     canvas.clear();
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -40,10 +40,47 @@ pub fn main() {
                     ..
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
-                    let clicked_point = Point::new(x, y);
-                    graphics::draw_target(clicked_point, &mut canvas);
-                    control_points.push(clicked_point);
-                    current_point += 1;
+                    println!("Clicked at {x}, {y}");
+
+                    let color = Color {
+                        r: 255,
+                        g: 0,
+                        b: 0,
+                        a: 0,
+                    };
+
+                    graphics::draw_point(
+                        x,
+                        y,
+                        color.to_u32(unsafe {
+                            &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
+                                PixelFormatEnum::ARGB8888 as u32,
+                            ))
+                        }) as f32,
+                        &mut canvas,
+                    );
+
+                    let canvas_pixels = canvas
+                        .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
+                        .expect("Read pixels failes");
+
+                    let pixel_color: u32 =
+                        graphics::get_color(Point::new(x, y), 640, &canvas_pixels);
+
+                    let r_d = graphics::get_color_component(pixel_color as u32, 'r');
+                    let g_d = graphics::get_color_component(pixel_color as u32, 'g');
+                    let b_d = graphics::get_color_component(pixel_color as u32, 'b');
+                    println!("Cor do pixel_color {}, R{} G{} B{}", pixel_color, r_d, g_d, b_d);
+
+                    // graphics::flood_fill(
+                    //     Point::new(x, y),
+                    //     color.to_u32(unsafe {
+                    //         &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
+                    //             PixelFormatEnum::ARGB8888 as u32,
+                    //         ))
+                    //     }),
+                    //     &mut canvas,
+                    // );
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),
@@ -76,7 +113,7 @@ pub fn main() {
         let x = 200;
         let y = 200;
 
-        graphics::draw_heart(x, y, &mut canvas);
+        // graphics::draw_heart(x, y, &mut canvas);
         graphics::draw_heart(600, 440, &mut canvas);
 
         canvas.present();

@@ -1,9 +1,13 @@
+use std::collections::VecDeque;
+
+use std::{thread, time};
+
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
-use sdl2::render::Canvas;
-use sdl2::video::Window;
-use sdl2::Error;
+use sdl2::render::{Canvas, Texture, TextureAccess};
+use sdl2::surface::Surface;
+use sdl2::video::{Window, WindowContext};
 
 pub trait Drawing {
     fn new(&self);
@@ -43,7 +47,7 @@ impl BezierCurve {
             println!("Already has all points");
             return;
         }
-        
+
         self.controll_points.push(point);
     }
 
@@ -79,14 +83,46 @@ impl Rectangle {
     }
 }
 
+pub fn flood_fill(start: Point, fill_color: u32, canvas: &mut Canvas<Window>) {
+    let (width, height) = canvas.output_size().unwrap();
 
-pub fn get_click_color(point: Point, canvas: &mut Canvas<Window>) -> u32 {
-    let (screen_width, screen_height) = canvas.output_size().unwrap();
-
-    let pixels = canvas
+    let canvas_pixels = canvas
         .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
         .expect("Read pixels failes");
 
+    let default_color: u32 = get_color(start, width, &canvas_pixels);
+    println!("Default color: {}", default_color);
+
+    let mut stack: VecDeque<Point> = VecDeque::new();
+    stack.push_back(start);
+
+    while stack.is_empty() == false {
+        let p = stack.pop_back().unwrap();
+        if p.y < 0 || p.y > (height as i32 - 1) || p.x < 0 || p.x > (width as i32 - 1) {
+            continue;
+        }
+
+        let pixel_color: u32 = get_color(p, width, &canvas_pixels);
+
+        if pixel_color == default_color {
+            draw_point(p.x, p.y, fill_color as f32, canvas);
+            println!("Desenhando no: {:?}", p);
+            stack.push_back(Point::new(p.x + 1, p.y));
+            stack.push_back(Point::new(p.x - 1, p.y));
+            stack.push_back(Point::new(p.x, p.y + 1));
+            stack.push_back(Point::new(p.x, p.y - 1));
+            canvas.present();
+        } else {
+            println!("Ponto: {:?}", p);
+        }
+
+        let ten_millis = time::Duration::from_millis(100);
+
+        thread::sleep(ten_millis);
+    }
+}
+
+pub fn get_color(point: Point, screen_width: u32, pixels: &Vec<u8>) -> u32 {
     let index = (point.y as u32 * screen_width + point.x as u32) * 4;
 
     let b = pixels[index as usize] as u32;
@@ -104,7 +140,7 @@ pub fn get_click_color(point: Point, canvas: &mut Canvas<Window>) -> u32 {
     // );
 }
 
-fn get_color_component(color: u32, component: char) -> u8 {
+pub fn get_color_component(color: u32, component: char) -> u8 {
     match component {
         'r' | 'R' => ((color >> 16) & 0xFFF) as u8,
         'g' | 'G' => ((color >> 8) & 0xFFF) as u8,
@@ -113,7 +149,7 @@ fn get_color_component(color: u32, component: char) -> u8 {
     }
 }
 
-fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
+pub fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
     let r = get_color_component(c as u32, 'r');
     let g = get_color_component(c as u32, 'g');
     let b = get_color_component(c as u32, 'b');
