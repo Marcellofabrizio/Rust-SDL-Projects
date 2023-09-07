@@ -37,6 +37,19 @@ impl BezierCurve {
             canvas,
         );
     }
+
+    pub fn add_point(&mut self, point: Point) {
+        if self.can_receive_points() == false {
+            println!("Already has all points");
+            return;
+        }
+        
+        self.controll_points.push(point);
+    }
+
+    pub fn can_receive_points(&self) -> bool {
+        self.controll_points.len() < 4
+    }
 }
 
 pub struct Rectangle {

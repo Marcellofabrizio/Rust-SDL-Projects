@@ -4,7 +4,7 @@ use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use std::time::Duration;
 
-mod geometry;
+mod graphics;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -22,7 +22,7 @@ pub fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let mut rectangles: Vec<geometry::Rectangle> = Vec::new();
+    let mut rectangles: Vec<graphics::Rectangle> = Vec::new();
     let mut start_point: Option<Point> = None;
     let mut end_point: Option<Point> = None;
 
@@ -41,7 +41,7 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     let clicked_point = Point::new(x, y);
-                    geometry::draw_target(clicked_point, &mut canvas);
+                    graphics::draw_target(clicked_point, &mut canvas);
                     control_points.push(clicked_point);
                     current_point += 1;
                 }
@@ -56,15 +56,15 @@ pub fn main() {
         let mut pois: Vec<Point> = Vec::new();
         pois.push(Point::new(180, 200));
         pois.push(Point::new(300, 120));
-        let rect = geometry::Rectangle::new(pois);
+        let rect = graphics::Rectangle::new(pois);
         rect.draw(&mut canvas);
 
         for point in control_points.iter() {
-            geometry::draw_target(*point, &mut canvas);
+            graphics::draw_target(*point, &mut canvas);
         }
 
         if current_point >= 4 && current_point % 4 == 0 {
-            geometry::draw_cubic_bezier(
+            graphics::draw_cubic_bezier(
                 control_points[current_point - 4],
                 control_points[current_point - 3],
                 control_points[current_point - 2],
@@ -76,8 +76,8 @@ pub fn main() {
         let x = 200;
         let y = 200;
 
-        geometry::draw_heart(x, y, &mut canvas);
-        geometry::draw_heart(600, 440, &mut canvas);
+        graphics::draw_heart(x, y, &mut canvas);
+        graphics::draw_heart(600, 440, &mut canvas);
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
