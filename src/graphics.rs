@@ -79,6 +79,31 @@ impl Rectangle {
     }
 }
 
+
+pub fn get_click_color(point: Point, canvas: &mut Canvas<Window>) -> u32 {
+    let (screen_width, screen_height) = canvas.output_size().unwrap();
+
+    let pixels = canvas
+        .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
+        .expect("Read pixels failes");
+
+    let index = (point.y as u32 * screen_width + point.x as u32) * 4;
+
+    let b = pixels[index as usize] as u32;
+    let g = pixels[(index + 1) as usize] as u32;
+    let r = pixels[(index + 2) as usize] as u32;
+    let a = pixels[(index + 3) as usize] as u32;
+
+    (a << 24) | (r << 16) | (g << 8) | b
+
+    // println!(
+    //     "Collor on click: R:{:?}, G:{:?}, B:{:?}",
+    //     get_color_component(color, 'r'),
+    //     get_color_component(color, 'g'),
+    //     get_color_component(color, 'b')
+    // );
+}
+
 fn get_color_component(color: u32, component: char) -> u8 {
     match component {
         'r' | 'R' => ((color >> 16) & 0xFFF) as u8,
