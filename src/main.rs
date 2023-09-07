@@ -29,7 +29,7 @@ pub fn main() {
     let mut control_points: Vec<Point> = Vec::with_capacity(4);
     let mut current_point = 0;
 
-    canvas.set_draw_color(Color::RGBA(255, 255, 255, 0));
+    canvas.set_draw_color(Color::RGB(255, 255, 255));
     canvas.clear();
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -49,38 +49,15 @@ pub fn main() {
                         a: 0,
                     };
 
-                    graphics::draw_point(
-                        x,
-                        y,
+                    graphics::flood_fill(
+                        Point::new(x, y),
                         color.to_u32(unsafe {
                             &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
                                 PixelFormatEnum::ARGB8888 as u32,
                             ))
-                        }) as f32,
+                        }),
                         &mut canvas,
                     );
-
-                    let canvas_pixels = canvas
-                        .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
-                        .expect("Read pixels failes");
-
-                    let pixel_color: u32 =
-                        graphics::get_color(Point::new(x, y), 640, &canvas_pixels);
-
-                    let r_d = graphics::get_color_component(pixel_color as u32, 'r');
-                    let g_d = graphics::get_color_component(pixel_color as u32, 'g');
-                    let b_d = graphics::get_color_component(pixel_color as u32, 'b');
-                    println!("Cor do pixel_color {}, R{} G{} B{}", pixel_color, r_d, g_d, b_d);
-
-                    // graphics::flood_fill(
-                    //     Point::new(x, y),
-                    //     color.to_u32(unsafe {
-                    //         &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
-                    //             PixelFormatEnum::ARGB8888 as u32,
-                    //         ))
-                    //     }),
-                    //     &mut canvas,
-                    // );
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),

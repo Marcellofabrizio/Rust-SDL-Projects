@@ -86,12 +86,11 @@ impl Rectangle {
 pub fn flood_fill(start: Point, fill_color: u32, canvas: &mut Canvas<Window>) {
     let (width, height) = canvas.output_size().unwrap();
 
-    let canvas_pixels = canvas
+    let mut canvas_pixels = canvas
         .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
         .expect("Read pixels failes");
 
     let default_color: u32 = get_color(start, width, &canvas_pixels);
-    println!("Default color: {}", default_color);
 
     let mut stack: VecDeque<Point> = VecDeque::new();
     stack.push_back(start);
@@ -102,23 +101,20 @@ pub fn flood_fill(start: Point, fill_color: u32, canvas: &mut Canvas<Window>) {
             continue;
         }
 
+        canvas_pixels = canvas
+            .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
+            .expect("Read pixels failes");
+
         let pixel_color: u32 = get_color(p, width, &canvas_pixels);
 
         if pixel_color == default_color {
             draw_point(p.x, p.y, fill_color as f32, canvas);
-            println!("Desenhando no: {:?}", p);
             stack.push_back(Point::new(p.x + 1, p.y));
             stack.push_back(Point::new(p.x - 1, p.y));
             stack.push_back(Point::new(p.x, p.y + 1));
             stack.push_back(Point::new(p.x, p.y - 1));
             canvas.present();
-        } else {
-            println!("Ponto: {:?}", p);
         }
-
-        let ten_millis = time::Duration::from_millis(100);
-
-        thread::sleep(ten_millis);
     }
 }
 
