@@ -14,14 +14,14 @@ pub trait Drawing {
     fn draw(&self, canvas: &mut Canvas<Window>);
 }
 
-pub struct BezierCurve {
+pub struct CubicBezierCurve {
     pub controll_points: Vec<Point>,
     pub color: f32,
 }
 
-impl BezierCurve {
+impl CubicBezierCurve {
     pub fn new(points: Vec<Point>, color: Option<f32>) -> Self {
-        BezierCurve {
+        CubicBezierCurve {
             controll_points: points,
             color: color.unwrap_or(0.0),
         }
@@ -54,6 +54,11 @@ impl BezierCurve {
     pub fn can_receive_points(&self) -> bool {
         self.controll_points.len() < 4
     }
+}
+
+pub struct SmoothBezierCurve {
+    pub controll_points: Vec<Point>,
+    pub color: f32,
 }
 
 pub struct Rectangle {
@@ -92,6 +97,11 @@ pub fn flood_fill(start: Point, fill_color: u32, canvas: &mut Canvas<Window>) {
 
     let default_color: u32 = get_color(start, width, &canvas_pixels);
 
+    if default_color == fill_color {
+        println!("Cannot flood fill region alredy painted");
+        return;
+    }
+
     let mut stack: VecDeque<Point> = VecDeque::new();
     stack.push_back(start);
 
@@ -127,13 +137,6 @@ pub fn get_color(point: Point, screen_width: u32, pixels: &Vec<u8>) -> u32 {
     let a = pixels[(index + 3) as usize] as u32;
 
     (a << 24) | (r << 16) | (g << 8) | b
-
-    // println!(
-    //     "Collor on click: R:{:?}, G:{:?}, B:{:?}",
-    //     get_color_component(color, 'r'),
-    //     get_color_component(color, 'g'),
-    //     get_color_component(color, 'b')
-    // );
 }
 
 pub fn get_color_component(color: u32, component: char) -> u8 {
@@ -297,9 +300,25 @@ pub fn draw_cubic_bezier(
     }
 }
 
+pub fn draw_quadratic_bezier(p_1: Point, p_2: Point, p_3: Point, canvas: &mut Canvas<Window>) {
+    for u in 0..1000 {
+        let u = u as f32 / 1000 as f32;
+
+        let x_u = (1.0 - u).powi(2) * p_1.x as f32
+            + 2.0 * u * (1.0 - u) * p_2.x as f32
+            + u.powi(2) * p_3.x as f32;
+
+        let y_u = (1.0 - u).powi(2) * p_1.y as f32
+            + 2.0 * u * (1.0 - u) * p_2.y as f32
+            + u.powi(2) * p_3.y as f32;
+
+        draw_point(x_u as i32, y_u as i32, 0.0, canvas);
+    }
+}
+
 pub fn draw_target(point: Point, canvas: &mut Canvas<Window>) {
     canvas
-        .filled_circle(point.x as i16, point.y as i16, 5, Color::RGB(255, 0, 0))
+        .filled_circle(point.x as i16, point.y as i16, 3, Color::RGB(255, 0, 0))
         .unwrap();
 }
 
@@ -335,4 +354,12 @@ pub fn draw_heart(x: i32, y: i32, canvas: &mut Canvas<Window>) {
         Point::new(x, y),
         canvas,
     );
+}
+
+pub fn draw_digit_1(canvas: &mut Canvas<Window>) {
+    draw_line(Point::new(120, 120), Point::new(120, 60), canvas);
+    draw_line(Point::new(110, 120), Point::new(110, 80), canvas);
+    draw_line(Point::new(120, 120), Point::new(110, 120), canvas);
+    draw_line(Point::new(110, 80), Point::new(100, 80), canvas);
+    draw_line(Point::new(100, 80), Point::new(120, 60), canvas);
 }
