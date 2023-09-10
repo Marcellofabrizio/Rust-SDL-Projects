@@ -1,11 +1,16 @@
+use image::bmp::BmpEncoder;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::{Color, PixelFormat, PixelFormatEnum};
 use sdl2::rect::Point;
+use sdl2::render::Texture;
+use sdl2::surface::Surface;
+use std::fs::File;
+use std::io::BufWriter;
 use std::time::Duration;
 
 mod graphics;
-
+mod sdl_to_bmp;
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -17,6 +22,7 @@ pub fn main() {
         .unwrap();
 
     let mut canvas = window.into_canvas().build().unwrap();
+
     canvas.clear();
     canvas.present();
 
@@ -41,23 +47,10 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     println!("Clicked at {x}, {y}");
-
-                    let color = Color {
-                        r: 255,
-                        g: 0,
-                        b: 0,
-                        a: 0,
-                    };
-
-                    graphics::flood_fill(
-                        Point::new(x, y),
-                        color.to_u32(unsafe {
-                            &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
-                                PixelFormatEnum::ARGB8888 as u32, // https://github.com/Rust-SDL2/rust-sdl2/issues/840
-                            ))
-                        }),
-                        &mut canvas,
-                    );
+                    let clicked_point = Point::new(x, y);
+                    graphics::draw_target(clicked_point, &mut canvas);
+                    control_points.push(clicked_point);
+                    current_point += 1;
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),
@@ -87,13 +80,33 @@ pub fn main() {
             );
         }
 
-        let x = 200;
-        let y = 200;
-
         // graphics::draw_heart(x, y, &mut canvas);
         graphics::draw_heart(600, 440, &mut canvas);
 
+        graphics::draw_digit_1(&mut canvas);
+
         canvas.present();
+
+        if event_pump
+            .keyboard_state()
+            .is_scancode_pressed(sdl2::keyboard::Scancode::S)
+        {
+            let texture_creator = canvas.texture_creator();
+
+            let mut text = texture_creator
+                .create_texture(
+                    sdl2::pixels::PixelFormatEnum::ARGB8888,
+                    sdl2::render::TextureAccess::Streaming,
+                    640,
+                    480,
+                )
+                .unwrap();
+
+            sdl_to_bmp::save_canvas_to_bmp(&mut text, &mut canvas)
+                .expect("Failed to save BMP file");
+            println!("Canvas saved as 'output.bmp'");
+        }
+
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
 }
