@@ -1,12 +1,7 @@
-use image::bmp::BmpEncoder;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::{Color, PixelFormat, PixelFormatEnum};
+use sdl2::pixels::Color;
 use sdl2::rect::Point;
-use sdl2::render::Texture;
-use sdl2::surface::Surface;
-use std::fs::File;
-use std::io::BufWriter;
 use std::time::Duration;
 
 mod graphics;
@@ -16,7 +11,7 @@ pub fn main() {
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem
-        .window("rust-sdl2 demo", 640, 480)
+        .window("rust-sdl2 demo", 840, 680)
         .position_centered()
         .build()
         .unwrap();
@@ -47,10 +42,7 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     println!("Clicked at {x}, {y}");
-                    let clicked_point = Point::new(x, y);
-                    graphics::draw_target(clicked_point, &mut canvas);
-                    control_points.push(clicked_point);
-                    current_point += 1;
+                    graphics::flood_fill(Point::new(x, y), 0, &mut canvas)
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),
