@@ -357,9 +357,69 @@ pub fn draw_heart(x: i32, y: i32, canvas: &mut Canvas<Window>) {
 }
 
 pub fn draw_digit_1(canvas: &mut Canvas<Window>) {
-    draw_line(Point::new(120, 120), Point::new(120, 60), canvas);
-    draw_line(Point::new(110, 120), Point::new(110, 80), canvas);
-    draw_line(Point::new(120, 120), Point::new(110, 120), canvas);
-    draw_line(Point::new(110, 80), Point::new(100, 80), canvas);
-    draw_line(Point::new(100, 80), Point::new(120, 60), canvas);
+    let x_i = 435;
+    let y_i = 278;
+
+    let mut x = x_i;
+    let mut y = y_i;
+
+    draw_cubic_bezier(
+        Point::new(x, y),
+        Point::new(x - 2, y + 5),
+        Point::new(x - 5, y + 9),
+        Point::new(x - 9, y + 13),
+        canvas,
+    );
+
+    x = x - 9;
+    y = y + 13;
+
+    draw_cubic_bezier(
+        Point::new(x, y),
+        Point::new(x - 6, y + 6),
+        Point::new(x - 15, y + 12),
+        Point::new(x - 22, y + 15),
+        canvas,
+    );
+
+    x = x - 22;
+    y = y + 15;
+
+    draw_line(Point::new(x, y), Point::new(x, y + 17), canvas);
+
+    y = y + 17;
+
+    draw_cubic_bezier(
+        Point::new(x, y),
+        Point::new(x + 8, y - 3),
+        Point::new(x + 16, y - 8),
+        Point::new(x + 23, y - 13),
+        canvas,
+    );
+
+    x = x + 23;
+    y = y - 13;
+
+    draw_cubic_bezier(
+        Point::new(x, y),
+        Point::new(x + 2, y - 1),
+        Point::new(x + 3, y - 3),
+        Point::new(x + 6, y - 5),
+        canvas,
+    );
+
+    x = x + 6;
+    y = y - 5;
+
+    draw_line(Point::new(x, y), Point::new(x, y + 60), canvas);
+
+    y = y + 60;
+
+    draw_line(Point::new(x, y), Point::new(x + 15, y), canvas);
+
+    x = x + 15;
+
+    draw_line(Point::new(x, y), Point::new(x, y_i), canvas);
+    draw_line(Point::new(x, y_i), Point::new(x_i, y_i), canvas);
+
 }
