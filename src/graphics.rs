@@ -9,9 +9,14 @@ use sdl2::render::{Canvas, Texture, TextureAccess};
 use sdl2::surface::Surface;
 use sdl2::video::{Window, WindowContext};
 
-pub trait Drawing {
-    fn new(&self);
-    fn draw(&self, canvas: &mut Canvas<Window>);
+pub struct Number {
+    pub number: char,
+    pub lines: Vec<Line>,
+    pub bezier_curves: Vec<CubicBezierCurve>,
+}
+
+pub struct Line {
+    pub controll_points: Vec<Point>,
 }
 
 pub struct CubicBezierCurve {
