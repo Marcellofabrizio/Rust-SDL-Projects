@@ -15,7 +15,7 @@ pub fn save_canvas_to_bmp(
     let width = query.width;
     let height = query.height;
 
-    let mut canvas_pixels = canvas
+    let canvas_pixels = canvas
         .read_pixels(None, sdl2::pixels::PixelFormatEnum::ARGB8888)
         .expect("Read pixels failes");
 
@@ -34,7 +34,6 @@ pub fn save_canvas_to_bmp(
         }
     }
 
-    // Create a BMP encoder and save the image to a file
     let output_file = File::create("output.bmp").expect("Failed to create BMP file");
     let mut buf_writer = BufWriter::new(output_file);
     let mut encoder = BmpEncoder::new(&mut buf_writer);

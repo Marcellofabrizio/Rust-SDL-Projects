@@ -76,7 +76,7 @@ pub fn main() {
         graphics::draw_heart(600, 440, &mut canvas);
 
         graphics::draw_digit_1(Point::new(200, 300), &mut canvas);
-        graphics::draw_digit_2(Point::new(300, 300), &mut canvas);
+        // graphics::draw_digit_2(Point::new(300, 300), &mut canvas);
 
 
         canvas.present();
@@ -91,8 +91,8 @@ pub fn main() {
                 .create_texture(
                     sdl2::pixels::PixelFormatEnum::ARGB8888,
                     sdl2::render::TextureAccess::Streaming,
-                    640,
-                    480,
+                    840,
+                    680,
                 )
                 .unwrap();
 

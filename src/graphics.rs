@@ -356,7 +356,7 @@ pub fn draw_heart(x: i32, y: i32, canvas: &mut Canvas<Window>) {
     );
 }
 
-pub fn draw_digit_1(point: Point, canvas: &mut Canvas<Window>) {
+pub fn draw_digit_1_v1(point: Point, canvas: &mut Canvas<Window>) {
     let x_i = point.x;
     let y_i = point.y;
 
@@ -471,6 +471,37 @@ pub fn draw_digit_2_v1(point: Point, canvas: &mut Canvas<Window>) {
     draw_line(Point::new(x, y), Point::new(x - 17, y), canvas);
 }
 
+pub fn draw_digit_1(point: Point, canvas: &mut Canvas<Window>) {
+    let x_i = point.x;
+    let y_i = point.y;
+
+    let w = 80;
+    let h = 120;
+
+    let x = 40;
+    let y = 10;
+
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+
+    draw_line(Point::new(x - 8, y), Point::new(10, y + 35), canvas);
+
+    draw_line(Point::new(10, y + 35), Point::new(x - 8, y + 35), canvas);
+
+    draw_line(Point::new(x - 8, y), Point::new(x + 13, y), canvas);
+
+    draw_line(Point::new(x + 13, y), Point::new(x + 13, h), canvas);
+
+    draw_line(Point::new(x - 8, y + 35), Point::new(x - 8, h), canvas);
+
+    // draw_line(Point::new(x, y), Point::new(x, y + 60), canvas);
+    // draw_line(Point::new(x, y), Point::new(x + 15, y), canvas);
+    // draw_line(Point::new(x, y), Point::new(x, y_i), canvas);
+    // draw_line(Point::new(x, y_i), Point::new(x_i, y_i), canvas);
+}
+
 pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
     let x_i = point.x;
     let y_i = point.y;
@@ -483,9 +514,9 @@ pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
     let w = 80;
     let h = 120;
 
-    let mut x = 40;
-    let mut y = 50;
-    
+    let x = 40;
+    let y = 50;
+
     draw_cubic_bezier(
         Point::new((x - (w / 2) + 5), y),
         Point::new(x - (w / 2) + 3, y - 30),
@@ -499,6 +530,12 @@ pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
         Point::new(x - (w / 2) + 20, y - 13),
         Point::new(x + (w / 2) - 20, y - 13),
         Point::new(x + (w / 2) - 22, y),
+        canvas,
+    );
+
+    draw_line(
+        Point::new(x - (w / 2) + 22, y),
+        Point::new(x - (w / 2) + 5, y),
         canvas,
     );
 
@@ -518,6 +555,32 @@ pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
         canvas,
     );
 
-    draw_line(Point::new(x - (w / 2) + 40, y + 50), Point::new(70, y + 50), canvas);
-    draw_line(Point::new(x - (w / 2) + 5, y + 60), Point::new(70, y + 60), canvas);
+    draw_line(
+        Point::new(x - (w / 2) + 40, y + 50),
+        Point::new(w - 10, y + 50),
+        canvas,
+    );
+    draw_line(
+        Point::new(x - (w / 2) + 5, y + 60),
+        Point::new(x - (w / 2) + 5, h - 5),
+        canvas,
+    );
+
+    draw_line(
+        Point::new(x - (w / 2) + 5, y + 60),
+        Point::new(x - (w / 2) + 5, h - 5),
+        canvas,
+    );
+
+    draw_line(
+        Point::new(x - (w / 2) + 5, h - 5),
+        Point::new(w - 10, h - 5),
+        canvas,
+    );
+
+    draw_line(
+        Point::new(w - 10, h - 5),
+        Point::new(w - 10, y + 50),
+        canvas,
+    );
 }
