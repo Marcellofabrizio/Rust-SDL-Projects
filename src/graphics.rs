@@ -475,38 +475,49 @@ pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
     let x_i = point.x;
     let y_i = point.y;
 
-    let mut x = x_i - 20;
-    let mut y = y_i;
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
 
-    let w = 60;
-    let h = 90;
+    let w = 80;
+    let h = 120;
 
+    let mut x = 40;
+    let mut y = 50;
+    
     draw_cubic_bezier(
-        Point::new(x - (w / 2), y),
+        Point::new((x - (w / 2) + 5), y),
         Point::new(x - (w / 2) + 3, y - 30),
         Point::new(x + (w / 2) - 3, y - 30),
-        Point::new(x + (w / 2), y),
+        Point::new((x + (w / 2) - 5), y),
         canvas,
     );
 
     draw_cubic_bezier(
-        Point::new(x - (w / 2) + 18, y),
+        Point::new(x - (w / 2) + 22, y),
         Point::new(x - (w / 2) + 20, y - 13),
         Point::new(x + (w / 2) - 20, y - 13),
-        Point::new(x + (w / 2) - 18, y),
+        Point::new(x + (w / 2) - 22, y),
         canvas,
     );
-
-    // x = x + 60;
 
     draw_cubic_bezier(
-        Point::new(x + (w / 2) - 18, y),
-        Point::new(x + (w / 2) - 10, y + 35),
-        Point::new(x - (w / 2) - 5, y + 40),
-        Point::new(x - (w / 2), y + 60),
+        Point::new(x + (w / 2) - 22, y),
+        Point::new(x + (w / 2) - 16, y + 35),
+        Point::new(x - (w / 2) + 10, y + 40),
+        Point::new(x - (w / 2) + 5, y + 60),
         canvas,
     );
 
-    draw_line(Point::new(0, 100), Point::new(50, 100), canvas);
-    draw_line(Point::new(100, 0), Point::new(100, 90), canvas);
+    draw_cubic_bezier(
+        Point::new(x + (w / 2) - 5, y),
+        Point::new(x + (w / 2) - 5, y + 30),
+        Point::new(x - (w / 2) + 58, y + 35),
+        Point::new(x - (w / 2) + 40, y + 50),
+        canvas,
+    );
+
+    draw_line(Point::new(x - (w / 2) + 40, y + 50), Point::new(70, y + 50), canvas);
+    draw_line(Point::new(x - (w / 2) + 5, y + 60), Point::new(70, y + 60), canvas);
 }
