@@ -768,7 +768,7 @@ pub fn draw_digit_5(canvas: &mut Canvas<Window>) {
     draw_line(Point::new(37, 30), Point::new(35, 60), canvas);
 }
 
-fn draw_digit_6(canvas: &mut Canvas<Window>) {
+pub fn draw_digit_6(canvas: &mut Canvas<Window>) {
     let w = 80;
     let h = 120;
     let x = 40;
@@ -778,4 +778,116 @@ fn draw_digit_6(canvas: &mut Canvas<Window>) {
     draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
     draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
     draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+
+    draw_cubic_bezier(
+        Point::new(30, 20),
+        Point::new(14, 50),
+        Point::new(12, 60),
+        Point::new(10, 80),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(10, 80),
+        Point::new(15, 130),
+        Point::new(65, 130),
+        Point::new(70, 90),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(70, 90),
+        Point::new(69, 55),
+        Point::new(35, 55),
+        Point::new(30, 60),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(30, 60),
+        Point::new(33, 50),
+        Point::new(36, 30),
+        Point::new(43, 20),
+        canvas,
+    );
+
+    draw_line(Point::new(43, 20), Point::new(30, 20), canvas);
+
+    draw_cubic_bezier(
+        Point::new(25, 90),
+        Point::new(30, 110),
+        Point::new(50, 110),
+        Point::new(55, 90),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(25, 90),
+        Point::new(30, 70),
+        Point::new(50, 70),
+        Point::new(55, 90),
+        canvas,
+    );
+}
+
+pub fn draw_digit_9(canvas: &mut Canvas<Window>) {
+    let w = 80;
+    let h = 120;
+    let x = 40;
+    let y = 10;
+
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+
+    draw_cubic_bezier(
+        Point::new(80 - 30, 120),
+        Point::new(80 - 14, (120 - 50) + 20),
+        Point::new(80 - 12, (120 - 60) + 20),
+        Point::new(80 - 10, (120 - 80) + 20),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(80 - 10, (120 - 80) + 20),
+        Point::new(80 - 15, (120 - 130) + 20),
+        Point::new(80 - 65, (120 - 130) + 20),
+        Point::new(80 - 70, (120 - 90) + 20),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(80 - 70, (120 - 90) + 20),
+        Point::new(80 - 69, (120 - 55) + 20),
+        Point::new(80 - 35, (120 - 55) + 20),
+        Point::new(80 - 30, (120 - 60) + 20),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(80 - 30, (120 - 60) + 20),
+        Point::new(80 - 33, (120 - 50) + 20),
+        Point::new(80 - 36, (120 - 30) + 20),
+        Point::new(80 - 43, 120),
+        canvas,
+    );
+
+    draw_line(Point::new(80 - 43, 120), Point::new(80 - 30, 120), canvas);
+
+    draw_cubic_bezier(
+        Point::new(80 - 25, (120 - 90) + 20),
+        Point::new(80 - 30, (120 - 110) + 20),
+        Point::new(80 - 50, (120 - 110) + 20),
+        Point::new(80 - 55, (120 - 90) + 20),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(80 - 25, (120 - 90) + 20),
+        Point::new(80 - 30, (120 - 70) + 20),
+        Point::new(80 - 50, (120 - 70) + 20),
+        Point::new(80 - 55, (120 - 90) + 20),
+        canvas,
+    );
 }
