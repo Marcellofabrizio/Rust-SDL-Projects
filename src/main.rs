@@ -5,6 +5,7 @@ use sdl2::rect::Point;
 use std::time::Duration;
 
 mod graphics;
+mod numbers;
 mod sdl_to_bmp;
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -76,8 +77,9 @@ pub fn main() {
         graphics::draw_heart(600, 440, &mut canvas);
 
         // graphics::draw_digit_4(Point::new(300, 300), &mut canvas);
-        graphics::draw_digit_8(&mut canvas);
-
+        // graphics::draw_digit_8(&mut canvas);
+        let mut num = graphics::create_digit_1();
+        num.draw(&mut canvas);
 
         canvas.present();
 

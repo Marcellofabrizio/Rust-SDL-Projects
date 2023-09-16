@@ -6,6 +6,8 @@ use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
+use crate::numbers;
+
 pub struct Number {
     pub number: char,
     pub lines: Vec<Line>,
@@ -16,16 +18,26 @@ pub struct Line {
     pub controll_points: Vec<Point>,
 }
 
+impl Line {
+    pub fn new(points: Vec<Point>) -> Self {
+        Line {
+            controll_points: points,
+        }
+    }
+
+    pub fn draw(&self, canvas: &mut Canvas<Window>) {
+        draw_line(self.controll_points[0], self.controll_points[1], canvas);
+    }
+}
+
 pub struct CubicBezierCurve {
     pub controll_points: Vec<Point>,
-    pub color: f32,
 }
 
 impl CubicBezierCurve {
-    pub fn new(points: Vec<Point>, color: Option<f32>) -> Self {
+    pub fn new(points: Vec<Point>) -> Self {
         CubicBezierCurve {
             controll_points: points,
-            color: color.unwrap_or(0.0),
         }
     }
 
@@ -324,396 +336,230 @@ pub fn draw_target(point: Point, canvas: &mut Canvas<Window>) {
         .unwrap();
 }
 
-pub fn draw_heart(x: i32, y: i32, canvas: &mut Canvas<Window>) {
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x, y - 30),
-        Point::new(x - 50, y - 30),
-        Point::new(x - 50, y),
-        canvas,
-    );
-
-    draw_cubic_bezier(
-        Point::new(x - 50, y),
-        Point::new(x - 50, y + 30),
-        Point::new(x, y + 35),
-        Point::new(x, y + 60),
-        canvas,
-    );
-
-    draw_cubic_bezier(
-        Point::new(x, y + 60),
-        Point::new(x, y + 35),
-        Point::new(x + 50, y + 30),
-        Point::new(x + 50, y),
-        canvas,
-    );
-
-    draw_cubic_bezier(
-        Point::new(x + 50, y),
-        Point::new(x + 50, y - 30),
-        Point::new(x, y - 30),
-        Point::new(x, y),
-        canvas,
-    );
-}
-
-pub fn draw_digit_1_v1(point: Point, canvas: &mut Canvas<Window>) {
-    let x_i = point.x;
-    let y_i = point.y;
-
-    let mut x = x_i;
-    let mut y = y_i;
-
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x - 2, y + 5),
-        Point::new(x - 5, y + 9),
-        Point::new(x - 9, y + 13),
-        canvas,
-    );
-
-    x = x - 9;
-    y = y + 13;
-
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x - 6, y + 6),
-        Point::new(x - 15, y + 12),
-        Point::new(x - 22, y + 15),
-        canvas,
-    );
-
-    x = x - 22;
-    y = y + 15;
-
-    draw_line(Point::new(x, y), Point::new(x, y + 17), canvas);
-
-    y = y + 17;
-
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x + 8, y - 3),
-        Point::new(x + 16, y - 8),
-        Point::new(x + 23, y - 13),
-        canvas,
-    );
-
-    x = x + 23;
-    y = y - 13;
-
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x + 2, y - 1),
-        Point::new(x + 3, y - 3),
-        Point::new(x + 6, y - 5),
-        canvas,
-    );
-
-    x = x + 6;
-    y = y - 5;
-
-    draw_line(Point::new(x, y), Point::new(x, y + 60), canvas);
-
-    y = y + 60;
-
-    draw_line(Point::new(x, y), Point::new(x + 15, y), canvas);
-
-    x = x + 15;
-
-    draw_line(Point::new(x, y), Point::new(x, y_i), canvas);
-    draw_line(Point::new(x, y_i), Point::new(x_i, y_i), canvas);
-}
-
-pub fn draw_digit_2_v1(point: Point, canvas: &mut Canvas<Window>) {
-    let x_i = point.x;
-    let y_i = point.y;
-
-    let mut x = x_i;
-    let mut y = y_i + 20;
-
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x, y - 35),
-        Point::new(x + 60, y - 35),
-        Point::new(x + 60, y),
-        canvas,
-    );
-
-    x = x + 60;
-
-    draw_cubic_bezier(
-        Point::new(x - 60, y + 60),
-        Point::new(x - 50, y + 35),
-        Point::new(x - 20, y + 30),
-        Point::new(x - 20, y),
-        canvas,
-    );
-
-    draw_cubic_bezier(
-        Point::new(x - 30, y + 50),
-        Point::new(x - 17, y + 35),
-        Point::new(x - 10, y + 30),
-        Point::new(x, y),
-        canvas,
-    );
-    x = x - 20;
-    y = y;
-
-    draw_cubic_bezier(
-        Point::new(x, y),
-        Point::new(x, y - 14),
-        Point::new(x - 23, y - 14),
-        Point::new(x - 23, y),
-        canvas,
-    );
-
-    x = x - 23;
-
-    draw_line(Point::new(x, y), Point::new(x - 17, y), canvas);
-}
-
-pub fn draw_digit_0(point: Point, canvas: &mut Canvas<Window>) {
+pub fn draw_digit_0(canvas: &mut Canvas<Window>) {
     let w = 80;
     let h = 120;
 
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(5, 70),
         Point::new(10, 0),
         Point::new(70, 0),
         Point::new(75, 70),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(20, 70),
         Point::new(25, 13),
         Point::new(55, 13),
         Point::new(60, 70),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(5, 70),
         Point::new(10, 137),
         Point::new(70, 137),
         Point::new(75, 70),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(20, 70),
         Point::new(25, 124),
         Point::new(55, 124),
         Point::new(60, 70),
-        canvas,
-    );
+    ]));
 }
 
-pub fn draw_digit_1(point: Point, canvas: &mut Canvas<Window>) {
-    let x_i = point.x;
-    let y_i = point.y;
-
+pub fn create_digit_1() -> numbers::Number {
     let w = 80;
     let h = 120;
 
     let x = 40;
     let y = 20;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
 
-    draw_line(Point::new(x - 8, y), Point::new(10, y + 35), canvas);
+    lines.push(Line::new(vec![Point::new(30, y), Point::new(10, y + 35)]));
+    lines.push(Line::new(vec![
+        Point::new(10, y + 35),
+        Point::new(x - 8, y + 35),
+    ]));
+    lines.push(Line::new(vec![Point::new(x - 8, y), Point::new(x + 13, y)]));
+    lines.push(Line::new(vec![
+        Point::new(x + 13, y),
+        Point::new(x + 13, h),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(x - 8, y + 35),
+        Point::new(x - 8, h),
+    ]));
 
-    draw_line(Point::new(10, y + 35), Point::new(x - 8, y + 35), canvas);
+    lines.push(Line::new(vec![
+        Point::new(x - 8, y + 35),
+        Point::new(x - 8, h),
+    ]));
 
-    draw_line(Point::new(x - 8, y), Point::new(x + 13, y), canvas);
-
-    draw_line(Point::new(x + 13, y), Point::new(x + 13, h), canvas);
-
-    draw_line(Point::new(x - 8, y + 35), Point::new(x - 8, h), canvas);
+    numbers::Number::new('1', w, h, Some(lines), None)
 }
 
-pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
-    let x_i = point.x;
-    let y_i = point.y;
-
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
-
+pub fn create_digit_2(canvas: &mut Canvas<Window>) -> numbers::Number {
     let w = 80;
     let h = 120;
 
     let x = 40;
     let y = 50;
 
-    draw_cubic_bezier(
-        Point::new((x - (w / 2) + 5), y),
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
+
+    bezier_curves.push(CubicBezierCurve::new(vec![
+        Point::new(x - (w / 2) + 5, y),
         Point::new(x - (w / 2) + 3, y - 30),
         Point::new(x + (w / 2) - 3, y - 30),
-        Point::new((x + (w / 2) - 5), y),
-        canvas,
-    );
+        Point::new(x + (w / 2) - 5, y),
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(x - (w / 2) + 22, y),
         Point::new(x - (w / 2) + 20, y - 13),
         Point::new(x + (w / 2) - 20, y - 13),
         Point::new(x + (w / 2) - 22, y),
-        canvas,
-    );
+    ]));
 
-    draw_line(
-        Point::new(x - (w / 2) + 22, y),
-        Point::new(x - (w / 2) + 5, y),
-        canvas,
-    );
-
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(x + (w / 2) - 22, y),
         Point::new(x + (w / 2) - 16, y + 35),
         Point::new(x - (w / 2) + 10, y + 40),
         Point::new(x - (w / 2) + 5, y + 60),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(x + (w / 2) - 5, y),
         Point::new(x + (w / 2) - 5, y + 30),
         Point::new(x - (w / 2) + 58, y + 35),
         Point::new(x - (w / 2) + 40, y + 50),
-        canvas,
-    );
+    ]));
 
-    draw_line(
+    lines.push(Line::new(vec![
+        Point::new(x - (w / 2) + 22, y),
+        Point::new(x - (w / 2) + 5, y),
+    ]));
+
+    lines.push(Line::new(vec![
         Point::new(x - (w / 2) + 40, y + 50),
         Point::new(w - 10, y + 50),
-        canvas,
-    );
-    draw_line(
+    ]));
+
+    lines.push(Line::new(vec![
         Point::new(x - (w / 2) + 5, y + 60),
         Point::new(x - (w / 2) + 5, h - 5),
-        canvas,
-    );
+    ]));
 
-    draw_line(
+    lines.push(Line::new(vec![
         Point::new(x - (w / 2) + 5, y + 60),
         Point::new(x - (w / 2) + 5, h - 5),
-        canvas,
-    );
+    ]));
 
-    draw_line(
+    lines.push(Line::new(vec![
         Point::new(x - (w / 2) + 5, h - 5),
         Point::new(w - 10, h - 5),
-        canvas,
-    );
+    ]));
 
-    draw_line(
+    lines.push(Line::new(vec![
         Point::new(w - 10, h - 5),
         Point::new(w - 10, y + 50),
-        canvas,
-    );
+    ]));
+
+    numbers::Number::new('2', w, h, Some(lines), Some(bezier_curves))
 }
 
-pub fn draw_digit_3(point: Point, canvas: &mut Canvas<Window>) {
-    let x_i = point.x;
-    let y_i = point.y;
+pub fn draw_digit_3(canvas: &mut Canvas<Window>) -> numbers::Number {
     let w = 80;
     let h = 120;
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_line(Point::new(10, 20), Point::new(70, 20), canvas);
-    draw_line(Point::new(10, 20), Point::new(10, 30), canvas);
-    draw_line(Point::new(10, 30), Point::new(55, 30), canvas);
-    draw_line(Point::new(70, 20), Point::new(70, 30), canvas);
+    lines.push(Line::new(vec![Point::new(10, 20), Point::new(70, 20)]));
+    lines.push(Line::new(vec![Point::new(10, 20), Point::new(10, 30)]));
+    lines.push(Line::new(vec![Point::new(10, 30), Point::new(55, 30)]));
+    lines.push(Line::new(vec![Point::new(70, 20), Point::new(70, 30)]));
 
-    draw_line(Point::new(55, 30), Point::new(30, 70), canvas);
-    draw_line(Point::new(70, 30), Point::new(50, 65), canvas);
+    lines.push(Line::new(vec![Point::new(55, 30), Point::new(30, 70)]));
+    lines.push(Line::new(vec![Point::new(70, 30), Point::new(50, 65)]));
 
-    draw_cubic_bezier(
+    lines.push(Line::new(vec![
+        Point::new(10, h - 10),
+        Point::new(18, h - 20),
+    ]));
+
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(50, 65),
         Point::new(85, 70),
         Point::new(85, 115),
         Point::new(40, h),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(40, h),
         Point::new(30, h - 2),
         Point::new(20, h - 3),
         Point::new(10, h - 10),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, 70),
         Point::new(70, 70),
         Point::new(70, 100),
         Point::new(50, 105),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(50, 105),
         Point::new(40, h - 12),
         Point::new(30, h - 13),
         Point::new(18, h - 20),
-        canvas,
-    );
+    ]));
 
-    draw_line(Point::new(10, h - 10), Point::new(18, h - 20), canvas);
+    numbers::Number::new('3', w, h, Some(lines), Some(bezier_curves))
 }
 
-pub fn draw_digit_4(point: Point, canvas: &mut Canvas<Window>) {
+pub fn draw_digit_4(canvas: &mut Canvas<Window>) -> numbers::Number {
     let w = 80;
     let h = 120;
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_line(Point::new(40, 20), Point::new(10, 80), canvas);
-    draw_line(Point::new(40, 45), Point::new(25, 80), canvas);
-    draw_line(Point::new(40, 45), Point::new(40, 80), canvas);
+    lines.push(Line::new(vec![Point::new(0, 0), Point::new(80, 0)]));
+    lines.push(Line::new(vec![Point::new(0, 0), Point::new(0, 120)]));
+    lines.push(Line::new(vec![Point::new(80, 0), Point::new(80, 120)]));
+    lines.push(Line::new(vec![Point::new(0, 120), Point::new(80, 120)]));
+    lines.push(Line::new(vec![Point::new(40, 20), Point::new(10, 80)]));
+    lines.push(Line::new(vec![Point::new(40, 45), Point::new(25, 80)]));
+    lines.push(Line::new(vec![Point::new(40, 45), Point::new(40, 80)]));
+    lines.push(Line::new(vec![Point::new(25, 80), Point::new(40, 80)]));
+    lines.push(Line::new(vec![Point::new(10, 80), Point::new(10, 90)]));
+    lines.push(Line::new(vec![Point::new(10, 90), Point::new(40, 90)]));
+    lines.push(Line::new(vec![Point::new(40, 90), Point::new(40, 120)]));
+    lines.push(Line::new(vec![Point::new(40, 20), Point::new(55, 20)]));
+    lines.push(Line::new(vec![Point::new(55, 20), Point::new(55, 80)]));
+    lines.push(Line::new(vec![Point::new(55, 80), Point::new(65, 80)]));
+    lines.push(Line::new(vec![Point::new(65, 80), Point::new(65, 90)]));
+    lines.push(Line::new(vec![Point::new(65, 90), Point::new(55, 90)]));
+    lines.push(Line::new(vec![Point::new(55, 90), Point::new(55, 120)]));
+    lines.push(Line::new(vec![Point::new(55, 120), Point::new(65, 120)]));
 
-    draw_line(Point::new(25, 80), Point::new(40, 80), canvas);
-
-    draw_line(Point::new(10, 80), Point::new(10, 90), canvas);
-    draw_line(Point::new(10, 90), Point::new(40, 90), canvas);
-
-    draw_line(Point::new(40, 90), Point::new(40, 120), canvas);
-
-    draw_line(Point::new(40, 20), Point::new(55, 20), canvas);
-    draw_line(Point::new(55, 20), Point::new(55, 80), canvas);
-
-    draw_line(Point::new(55, 80), Point::new(65, 80), canvas);
-    draw_line(Point::new(65, 80), Point::new(65, 90), canvas);
-    draw_line(Point::new(65, 90), Point::new(55, 90), canvas);
-    draw_line(Point::new(55, 90), Point::new(55, 120), canvas);
-
-    draw_line(Point::new(55, 120), Point::new(65, 120), canvas);
+    numbers::Number::new('4', w, h, Some(lines), None)
 }
 
 pub fn draw_digit_5(canvas: &mut Canvas<Window>) {
@@ -722,45 +568,38 @@ pub fn draw_digit_5(canvas: &mut Canvas<Window>) {
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(35, 60),
         Point::new(85, 65),
         Point::new(85, 115),
         Point::new(40, h),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(40, h),
         Point::new(30, h - 2),
         Point::new(20, h - 3),
         Point::new(10, h - 10),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(20, 70),
         Point::new(70, 70),
         Point::new(70, 100),
         Point::new(50, 105),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(50, 105),
         Point::new(40, h - 12),
         Point::new(30, h - 13),
         Point::new(18, h - 20),
-        canvas,
-    );
+    ]));
 
     draw_line(Point::new(10, h - 10), Point::new(18, h - 20), canvas);
-
     draw_line(Point::new(20, 70), Point::new(25, 20), canvas);
     draw_line(Point::new(25, 20), Point::new(70, 20), canvas);
     draw_line(Point::new(70, 20), Point::new(70, 30), canvas);
@@ -774,60 +613,52 @@ pub fn draw_digit_6(canvas: &mut Canvas<Window>) {
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, 20),
         Point::new(14, 50),
         Point::new(12, 60),
         Point::new(10, 80),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(10, 80),
         Point::new(15, 130),
         Point::new(65, 130),
         Point::new(70, 90),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(70, 90),
         Point::new(69, 55),
         Point::new(35, 55),
         Point::new(30, 60),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, 60),
         Point::new(33, 50),
         Point::new(36, 30),
         Point::new(43, 20),
-        canvas,
-    );
+    ]));
 
     draw_line(Point::new(43, 20), Point::new(30, 20), canvas);
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(25, 90),
         Point::new(30, 110),
         Point::new(50, 110),
         Point::new(55, 90),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(25, 90),
         Point::new(30, 70),
         Point::new(50, 70),
         Point::new(55, 90),
-        canvas,
-    );
+    ]));
 }
 
 pub fn draw_digit_7(canvas: &mut Canvas<Window>) {
@@ -836,10 +667,8 @@ pub fn draw_digit_7(canvas: &mut Canvas<Window>) {
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
     draw_line(Point::new(10, 20), Point::new(70, 20), canvas);
     draw_line(Point::new(10, 20), Point::new(10, 30), canvas);
@@ -857,91 +686,78 @@ pub fn draw_digit_7(canvas: &mut Canvas<Window>) {
 }
 
 pub fn draw_digit_8(canvas: &mut Canvas<Window>) {
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, 20),
         Point::new(35, 17),
         Point::new(45, 17),
         Point::new(50, 20),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, 20),
         Point::new(10, 30),
         Point::new(10, 60),
         Point::new(30, 70),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 30, 20),
         Point::new(80 - 10, 30),
         Point::new(80 - 10, 60),
         Point::new(80 - 30, 70),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, (120 - 20) + 18),
         Point::new(10, (120 - 30) + 18),
         Point::new(10, (120 - 60) + 18),
         Point::new(30, (120 - 70) + 18),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 30, (120 - 20) + 18),
         Point::new(80 - 10, (120 - 30) + 18),
         Point::new(80 - 10, (120 - 60) + 18),
         Point::new(80 - 30, (120 - 70) + 18),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(30, (120 - 20) + 18),
         Point::new(35, (120 - 17) + 18),
         Point::new(45, (120 - 17) + 18),
         Point::new(50, (120 - 20) + 18),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 25, 45),
         Point::new(80 - 30, 25),
         Point::new(80 - 50, 25),
         Point::new(80 - 55, 45),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 25, 45),
         Point::new(80 - 30, 65),
         Point::new(80 - 50, 65),
         Point::new(80 - 55, 45),
-        canvas,
-    );
+    ]));
 
-draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 25, 140 - 45),
         Point::new(80 - 30, 140 - 25),
         Point::new(80 - 50, 140 - 25),
         Point::new(80 - 55, 140 - 45),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 25, 140 - 45),
         Point::new(80 - 30, 140 - 65),
         Point::new(80 - 50, 140 - 65),
         Point::new(80 - 55, 140 - 45),
-        canvas,
-    );
-
+    ]));
 }
 
 pub fn draw_digit_9(canvas: &mut Canvas<Window>) {
@@ -950,58 +766,50 @@ pub fn draw_digit_9(canvas: &mut Canvas<Window>) {
     let x = 40;
     let y = 10;
 
-    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
-    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
-    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
-    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+    let mut lines: Vec<Line> = Vec::new();
+    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 30, 120),
         Point::new(80 - 14, (120 - 50) + 20),
         Point::new(80 - 12, (120 - 60) + 20),
         Point::new(80 - 10, (120 - 80) + 20),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 10, (120 - 80) + 20),
         Point::new(80 - 15, (120 - 130) + 20),
         Point::new(80 - 65, (120 - 130) + 20),
         Point::new(80 - 70, (120 - 90) + 20),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 70, (120 - 90) + 20),
         Point::new(80 - 69, (120 - 55) + 20),
         Point::new(80 - 35, (120 - 55) + 20),
         Point::new(80 - 30, (120 - 60) + 20),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 30, (120 - 60) + 20),
         Point::new(80 - 33, (120 - 50) + 20),
         Point::new(80 - 36, (120 - 30) + 20),
         Point::new(80 - 43, 120),
-        canvas,
-    );
+    ]));
 
     draw_line(Point::new(80 - 43, 120), Point::new(80 - 30, 120), canvas);
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 25, (120 - 90) + 20),
         Point::new(80 - 30, (120 - 110) + 20),
         Point::new(80 - 50, (120 - 110) + 20),
         Point::new(80 - 55, (120 - 90) + 20),
-        canvas,
-    );
+    ]));
 
-    draw_cubic_bezier(
+    bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(80 - 25, (120 - 90) + 20),
         Point::new(80 - 30, (120 - 70) + 20),
         Point::new(80 - 50, (120 - 70) + 20),
         Point::new(80 - 55, (120 - 90) + 20),
-        canvas,
-    );
+    ]));
 }
