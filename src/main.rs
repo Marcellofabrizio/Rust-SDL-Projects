@@ -77,7 +77,7 @@ pub fn main() {
 
         // graphics::draw_digit_1(Point::new(200, 300), &mut canvas);
         // graphics::draw_digit_2(Point::new(300, 300), &mut canvas);
-        graphics::draw_digit_3(Point::new(300, 300), &mut canvas);
+        graphics::draw_digit_1(Point::new(300, 300), &mut canvas);
 
 
         canvas.present();
