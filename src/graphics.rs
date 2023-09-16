@@ -487,7 +487,7 @@ pub fn draw_digit_0(point: Point, canvas: &mut Canvas<Window>) {
 
     draw_cubic_bezier(
         Point::new(5, 70),
-        Point::new(10,0),
+        Point::new(10, 0),
         Point::new(70, 0),
         Point::new(75, 70),
         canvas,
@@ -681,4 +681,40 @@ pub fn draw_digit_3(point: Point, canvas: &mut Canvas<Window>) {
     );
 
     draw_line(Point::new(10, h - 10), Point::new(18, h - 20), canvas);
+}
+
+pub fn draw_digit_4(point: Point, canvas: &mut Canvas<Window>) {
+    let w = 80;
+    let h = 120;
+    let x = 40;
+    let y = 10;
+
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+
+    draw_line(Point::new(40, 20), Point::new(10, 80), canvas);
+    draw_line(Point::new(40, 45), Point::new(25, 80), canvas);
+    draw_line(Point::new(40, 45), Point::new(40, 80), canvas);
+
+    draw_line(Point::new(25, 80), Point::new(40, 80), canvas);
+
+
+    draw_line(Point::new(10, 80), Point::new(10, 90), canvas);
+    draw_line(Point::new(10, 90), Point::new(40, 90), canvas);
+
+    draw_line(Point::new(40, 90), Point::new(40, 120), canvas);
+
+
+    draw_line(Point::new(40, 20), Point::new(55, 20), canvas);
+    draw_line(Point::new(55, 20), Point::new(55, 80), canvas);
+
+    draw_line(Point::new(55, 80), Point::new(65, 80), canvas);
+    draw_line(Point::new(65, 80), Point::new(65, 90), canvas);
+    draw_line(Point::new(65, 90), Point::new(55, 90), canvas);
+    draw_line(Point::new(55, 90), Point::new(55, 120), canvas);
+
+    draw_line(Point::new(55, 120), Point::new(65, 120), canvas);
+
 }
