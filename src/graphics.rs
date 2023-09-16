@@ -761,12 +761,21 @@ pub fn draw_digit_5(canvas: &mut Canvas<Window>) {
 
     draw_line(Point::new(10, h - 10), Point::new(18, h - 20), canvas);
 
-    draw_line(Point::new(20, 70), Point::new(20, 20), canvas);
-    draw_line(Point::new(20, 20), Point::new(70, 20), canvas);
+    draw_line(Point::new(20, 70), Point::new(25, 20), canvas);
+    draw_line(Point::new(25, 20), Point::new(70, 20), canvas);
     draw_line(Point::new(70, 20), Point::new(70, 30), canvas);
-    draw_line(Point::new(70, 30), Point::new(35, 30), canvas);
-    draw_line(Point::new(35, 30), Point::new(35, 60), canvas);
-    
+    draw_line(Point::new(70, 30), Point::new(37, 30), canvas);
+    draw_line(Point::new(37, 30), Point::new(35, 60), canvas);
+}
 
+fn draw_digit_6(canvas: &mut Canvas<Window>) {
+    let w = 80;
+    let h = 120;
+    let x = 40;
+    let y = 10;
 
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
 }
