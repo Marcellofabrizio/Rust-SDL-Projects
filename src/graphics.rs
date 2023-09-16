@@ -700,12 +700,10 @@ pub fn draw_digit_4(point: Point, canvas: &mut Canvas<Window>) {
 
     draw_line(Point::new(25, 80), Point::new(40, 80), canvas);
 
-
     draw_line(Point::new(10, 80), Point::new(10, 90), canvas);
     draw_line(Point::new(10, 90), Point::new(40, 90), canvas);
 
     draw_line(Point::new(40, 90), Point::new(40, 120), canvas);
-
 
     draw_line(Point::new(40, 20), Point::new(55, 20), canvas);
     draw_line(Point::new(55, 20), Point::new(55, 80), canvas);
@@ -716,5 +714,59 @@ pub fn draw_digit_4(point: Point, canvas: &mut Canvas<Window>) {
     draw_line(Point::new(55, 90), Point::new(55, 120), canvas);
 
     draw_line(Point::new(55, 120), Point::new(65, 120), canvas);
+}
+
+pub fn draw_digit_5(canvas: &mut Canvas<Window>) {
+    let w = 80;
+    let h = 120;
+    let x = 40;
+    let y = 10;
+
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+
+    draw_cubic_bezier(
+        Point::new(35, 60),
+        Point::new(85, 65),
+        Point::new(85, 115),
+        Point::new(40, h),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(40, h),
+        Point::new(30, h - 2),
+        Point::new(20, h - 3),
+        Point::new(10, h - 10),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(20, 70),
+        Point::new(70, 70),
+        Point::new(70, 100),
+        Point::new(50, 105),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(50, 105),
+        Point::new(40, h - 12),
+        Point::new(30, h - 13),
+        Point::new(18, h - 20),
+        canvas,
+    );
+
+    draw_line(Point::new(10, h - 10), Point::new(18, h - 20), canvas);
+
+    draw_line(Point::new(20, 70), Point::new(20, 20), canvas);
+    draw_line(Point::new(20, 20), Point::new(70, 20), canvas);
+    draw_line(Point::new(70, 20), Point::new(70, 30), canvas);
+    draw_line(Point::new(70, 30), Point::new(35, 30), canvas);
+    draw_line(Point::new(35, 30), Point::new(35, 60), canvas);
+    
+
 
 }
