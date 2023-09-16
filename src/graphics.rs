@@ -1,13 +1,10 @@
 use std::collections::VecDeque;
 
-use std::{thread, time};
-
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
-use sdl2::render::{Canvas, Texture, TextureAccess};
-use sdl2::surface::Surface;
-use sdl2::video::{Window, WindowContext};
+use sdl2::render::Canvas;
+use sdl2::video::Window;
 
 pub struct Number {
     pub number: char,
@@ -588,4 +585,60 @@ pub fn draw_digit_2(point: Point, canvas: &mut Canvas<Window>) {
         Point::new(w - 10, y + 50),
         canvas,
     );
+}
+
+pub fn draw_digit_3(point: Point, canvas: &mut Canvas<Window>) {
+    let x_i = point.x;
+    let y_i = point.y;
+    let w = 80;
+    let h = 120;
+    let x = 40;
+    let y = 10;
+
+    draw_line(Point::new(0, 0), Point::new(80, 0), canvas);
+    draw_line(Point::new(0, 0), Point::new(0, 120), canvas);
+    draw_line(Point::new(80, 0), Point::new(80, 120), canvas);
+    draw_line(Point::new(0, 120), Point::new(80, 120), canvas);
+
+    draw_line(Point::new(10, 20), Point::new(70, 20), canvas);
+    draw_line(Point::new(10, 20), Point::new(10, 30), canvas);
+    draw_line(Point::new(10, 30), Point::new(55, 30), canvas);
+    draw_line(Point::new(70, 20), Point::new(70, 30), canvas);
+
+    draw_line(Point::new(55, 30), Point::new(30, 70), canvas);
+    draw_line(Point::new(70, 30), Point::new(50, 65), canvas);
+
+    draw_cubic_bezier(
+        Point::new(50, 65),
+        Point::new(85, 70),
+        Point::new(85, 115),
+        Point::new(40, h),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(40, h),
+        Point::new(30, h - 2),
+        Point::new(20, h - 3),
+        Point::new(10, h - 10),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(30, 70),
+        Point::new(70, 70),
+        Point::new(70, 100),
+        Point::new(50, 105),
+        canvas,
+    );
+
+    draw_cubic_bezier(
+        Point::new(50, 105),
+        Point::new(40, h - 12),
+        Point::new(30, h - 13),
+        Point::new(18, h - 20),
+        canvas,
+    );
+
+    draw_line(Point::new(10, h - 10), Point::new(18, h - 20), canvas);
 }
