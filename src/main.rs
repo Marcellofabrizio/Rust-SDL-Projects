@@ -76,7 +76,7 @@ pub fn main() {
         graphics::draw_heart(600, 440, &mut canvas);
 
         // graphics::draw_digit_4(Point::new(300, 300), &mut canvas);
-        graphics::draw_digit_9(&mut canvas);
+        graphics::draw_digit_7(&mut canvas);
 
 
         canvas.present();
