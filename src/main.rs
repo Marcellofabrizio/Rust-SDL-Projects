@@ -53,32 +53,22 @@ pub fn main() {
             }
         }
 
-        let mut pois: Vec<Point> = Vec::new();
-        pois.push(Point::new(180, 200));
-        pois.push(Point::new(300, 120));
-        let rect = graphics::Rectangle::new(pois);
-        rect.draw(&mut canvas);
+        canvas.set_draw_color(Color::RGB(0, 0, 0));
 
-        for point in control_points.iter() {
-            graphics::draw_target(*point, &mut canvas);
+        let mut num = numbers::create_digit('9').unwrap();
+
+        for line in num.lines.iter_mut() {
+            for point in line.controll_points.iter_mut() {
+                graphics::translate(point, 200, 100);
+            }
         }
 
-        if current_point >= 4 && current_point % 4 == 0 {
-            graphics::draw_cubic_bezier(
-                control_points[current_point - 4],
-                control_points[current_point - 3],
-                control_points[current_point - 2],
-                control_points[current_point - 1],
-                &mut canvas,
-            );
+        for curve in num.bezier_curves.iter_mut() {
+            for point in curve.controll_points.iter_mut() {
+                graphics::translate(point, 200, 100);
+            }
         }
 
-        // graphics::draw_heart(x, y, &mut canvas);
-        graphics::draw_heart(600, 440, &mut canvas);
-
-        // graphics::draw_digit_4(Point::new(300, 300), &mut canvas);
-        // graphics::draw_digit_8(&mut canvas);
-        let mut num = graphics::create_digit_1();
         num.draw(&mut canvas);
 
         canvas.present();
