@@ -24,16 +24,14 @@ pub fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    let mut rectangles: Vec<graphics::Rectangle> = Vec::new();
-    let mut start_point: Option<Point> = None;
-    let mut end_point: Option<Point> = None;
-
-    let mut control_points: Vec<Point> = Vec::with_capacity(4);
-    let mut current_point = 0;
+    // let mut number_series: Vec<numbers::NumberSeries> = Vec::new();
+    let mut number_series = numbers::NumberSeries::new(0, 0, "0123456789".to_string());
 
     canvas.set_draw_color(Color::RGB(255, 255, 255));
     canvas.clear();
     'running: loop {
+        canvas.set_draw_color(Color::RGB(0, 0, 0));
+
         for event in event_pump.poll_iter() {
             match event {
                 Event::Quit { .. }
@@ -53,23 +51,13 @@ pub fn main() {
             }
         }
 
-        canvas.set_draw_color(Color::RGB(0, 0, 0));
+        // let mut num = numbers::create_digit('9').unwrap();
+        // graphics::translate_number(&mut num, 400, 200);
+        // num.draw(&mut canvas);
 
-        let mut num = numbers::create_digit('9').unwrap();
-
-        for line in num.lines.iter_mut() {
-            for point in line.controll_points.iter_mut() {
-                graphics::translate(point, 200, 100);
-            }
+        for num in number_series.numbers.iter_mut() {
+            num.draw(&mut canvas);
         }
-
-        for curve in num.bezier_curves.iter_mut() {
-            for point in curve.controll_points.iter_mut() {
-                graphics::translate(point, 200, 100);
-            }
-        }
-
-        num.draw(&mut canvas);
 
         canvas.present();
 

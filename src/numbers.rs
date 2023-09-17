@@ -1,9 +1,41 @@
 use std::error::Error;
 
-use crate::graphics::{self, CubicBezierCurve, Line};
+use crate::graphics::{self, translate, translate_number, CubicBezierCurve, Line};
 use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
+
+pub struct NumberSeries {
+    pub x: i32,
+    pub y: i32,
+    pub number_str: String,
+    pub numbers: Vec<Number>,
+}
+
+impl NumberSeries {
+    pub fn new(x: i32, y: i32, number_str: String) -> Self {
+        if number_str.is_empty() {
+            panic!("Empty number string!!!!");
+        }
+
+        let mut numbers: Vec<Number> = Vec::new();
+
+        for c in number_str.chars() {
+            numbers.push(create_digit(c).unwrap()); // TODO: at least treat the fucking error
+        }
+
+        for (i, number) in numbers.iter_mut().enumerate() {
+            translate_number(number, number.w * i as i32, number.h);
+        }
+
+        NumberSeries {
+            x: x,
+            y: y,
+            number_str: number_str,
+            numbers: numbers,
+        }
+    }
+}
 
 pub struct Number {
     pub number: char,
@@ -269,12 +301,7 @@ pub fn create_digit_4() -> Number {
     let y = 10;
 
     let mut lines: Vec<Line> = Vec::new();
-    let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
-    lines.push(Line::new(vec![Point::new(0, 0), Point::new(80, 0)]));
-    lines.push(Line::new(vec![Point::new(0, 0), Point::new(0, 120)]));
-    lines.push(Line::new(vec![Point::new(80, 0), Point::new(80, 120)]));
-    lines.push(Line::new(vec![Point::new(0, 120), Point::new(80, 120)]));
     lines.push(Line::new(vec![Point::new(40, 20), Point::new(10, 80)]));
     lines.push(Line::new(vec![Point::new(40, 45), Point::new(25, 80)]));
     lines.push(Line::new(vec![Point::new(40, 45), Point::new(40, 80)]));
@@ -288,7 +315,7 @@ pub fn create_digit_4() -> Number {
     lines.push(Line::new(vec![Point::new(65, 80), Point::new(65, 90)]));
     lines.push(Line::new(vec![Point::new(65, 90), Point::new(55, 90)]));
     lines.push(Line::new(vec![Point::new(55, 90), Point::new(55, 120)]));
-    lines.push(Line::new(vec![Point::new(55, 120), Point::new(65, 120)]));
+    lines.push(Line::new(vec![Point::new(55, 120), Point::new(40, 120)]));
 
     Number::new('4', w, h, Some(lines), None)
 }

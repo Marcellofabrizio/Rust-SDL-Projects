@@ -329,6 +329,20 @@ pub fn draw_quadratic_bezier(p_1: Point, p_2: Point, p_3: Point, canvas: &mut Ca
     }
 }
 
+pub fn translate_number(number: &mut numbers::Number, d: i32, e: i32) {
+    for line in number.lines.iter_mut() {
+        for point in line.controll_points.iter_mut() {
+            translate(point, d, e);
+        }
+    }
+
+    for curve in number.bezier_curves.iter_mut() {
+        for point in curve.controll_points.iter_mut() {
+            translate(point, d, e);
+        }
+    }
+}
+
 pub fn translate(point: &mut Point, d: i32, e: i32) {
     point.x = point.x + d;
     point.y = point.y + e;
