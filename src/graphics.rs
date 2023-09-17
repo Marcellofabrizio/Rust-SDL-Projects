@@ -8,12 +8,6 @@ use sdl2::video::Window;
 
 use crate::numbers;
 
-pub struct Number {
-    pub number: char,
-    pub lines: Vec<Line>,
-    pub bezier_curves: Vec<CubicBezierCurve>,
-}
-
 pub struct Line {
     pub controll_points: Vec<Point>,
 }
@@ -341,6 +335,8 @@ pub fn translate_number(number: &mut numbers::Number, d: i32, e: i32) {
             translate(point, d, e);
         }
     }
+
+    translate(&mut number.center, d, e)
 }
 
 pub fn translate(point: &mut Point, d: i32, e: i32) {

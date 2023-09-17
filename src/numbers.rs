@@ -41,6 +41,7 @@ pub struct Number {
     pub number: char,
     pub w: i32,
     pub h: i32,
+    pub center: Point,
     pub lines: Vec<graphics::Line>,
     pub bezier_curves: Vec<graphics::CubicBezierCurve>,
 }
@@ -50,6 +51,7 @@ impl Number {
         number: char,
         w: i32,
         h: i32,
+        center: Point,
         lines: Option<Vec<graphics::Line>>,
         bezier_curves: Option<Vec<graphics::CubicBezierCurve>>,
     ) -> Self {
@@ -57,18 +59,23 @@ impl Number {
             number: number,
             w: w,
             h: h,
+            center,
             lines: lines.unwrap_or(Vec::new()),
             bezier_curves: bezier_curves.unwrap_or(Vec::new()),
         }
     }
 
-    pub fn draw(&mut self, canvas: &mut Canvas<Window>) {
+    pub fn draw(&mut self, canvas: &mut Canvas<Window>, fill: bool) {
         for line in self.lines.iter_mut() {
             line.draw(canvas);
         }
 
         for bezier_curve in self.bezier_curves.iter_mut() {
             bezier_curve.draw(canvas);
+        }
+
+        if fill {
+            graphics::flood_fill(self.center, 0, canvas);
         }
     }
 }
@@ -130,7 +137,7 @@ pub fn create_digit_0() -> Number {
         Point::new(60, 70),
     ]));
 
-    Number::new('0', w, h, None, Some(bezier_curves))
+    Number::new('0', w, h, Point::new(40, 25), None, Some(bezier_curves))
 }
 
 pub fn create_digit_1() -> Number {
@@ -167,7 +174,7 @@ pub fn create_digit_1() -> Number {
         Point::new(x + 13, 120),
     ]));
 
-    Number::new('1', w, h, Some(lines), None)
+    Number::new('1', w, h, Point::new(40, 30), Some(lines), None)
 }
 
 pub fn create_digit_2() -> Number {
@@ -238,7 +245,14 @@ pub fn create_digit_2() -> Number {
         Point::new(w - 10, y + 50),
     ]));
 
-    Number::new('2', w, h, Some(lines), Some(bezier_curves))
+    Number::new(
+        '2',
+        w,
+        h,
+        Point::new(40, 30),
+        Some(lines),
+        Some(bezier_curves),
+    )
 }
 
 pub fn create_digit_3() -> Number {
@@ -291,7 +305,14 @@ pub fn create_digit_3() -> Number {
         Point::new(18, h - 20),
     ]));
 
-    Number::new('3', w, h, Some(lines), Some(bezier_curves))
+    Number::new(
+        '3',
+        w,
+        h,
+        Point::new(40, 15),
+        Some(lines),
+        Some(bezier_curves),
+    )
 }
 
 pub fn create_digit_4() -> Number {
@@ -317,7 +338,7 @@ pub fn create_digit_4() -> Number {
     lines.push(Line::new(vec![Point::new(55, 90), Point::new(55, 120)]));
     lines.push(Line::new(vec![Point::new(55, 120), Point::new(40, 120)]));
 
-    Number::new('4', w, h, Some(lines), None)
+    Number::new('4', w, h, Point::new(40, 15), Some(lines), None)
 }
 
 pub fn create_digit_5() -> Number {
@@ -367,7 +388,14 @@ pub fn create_digit_5() -> Number {
     lines.push(Line::new(vec![Point::new(70, 30), Point::new(37, 30)]));
     lines.push(Line::new(vec![Point::new(37, 30), Point::new(35, 60)]));
 
-    Number::new('5', w, h, Some(lines), Some(bezier_curves))
+    Number::new(
+        '5',
+        w,
+        h,
+        Point::new(40, 15),
+        Some(lines),
+        Some(bezier_curves),
+    )
 }
 
 pub fn create_digit_6() -> Number {
@@ -423,7 +451,14 @@ pub fn create_digit_6() -> Number {
         Point::new(55, 90),
     ]));
 
-    Number::new('6', w, h, Some(lines), Some(bezier_curves))
+    Number::new(
+        '6',
+        w,
+        h,
+        Point::new(40, 15),
+        Some(lines),
+        Some(bezier_curves),
+    )
 }
 
 pub fn create_digit_7() -> Number {
@@ -446,7 +481,7 @@ pub fn create_digit_7() -> Number {
     lines.push(Line::new(vec![Point::new(55, 30), Point::new(10, 120)]));
     lines.push(Line::new(vec![Point::new(10, 120), Point::new(25, 120)]));
 
-    Number::new('7', w, h, Some(lines), None)
+    Number::new('7', w, h, Point::new(40, 15), Some(lines), None)
 }
 
 pub fn create_digit_8() -> Number {
@@ -526,7 +561,7 @@ pub fn create_digit_8() -> Number {
         Point::new(80 - 55, 140 - 45),
     ]));
 
-    Number::new('8', w, h, None, Some(bezier_curves))
+    Number::new('8', w, h, Point::new(40, 15), None, Some(bezier_curves))
 }
 
 pub fn create_digit_9() -> Number {
@@ -585,5 +620,12 @@ pub fn create_digit_9() -> Number {
         Point::new(80 - 55, (120 - 90) + 20),
     ]));
 
-    Number::new('9', w, h, Some(lines), Some(bezier_curves))
+    Number::new(
+        '9',
+        w,
+        h,
+        Point::new(40, 15),
+        Some(lines),
+        Some(bezier_curves),
+    )
 }
