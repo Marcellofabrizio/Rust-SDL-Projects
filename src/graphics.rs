@@ -372,11 +372,14 @@ pub fn rotate_number(number: &mut numbers::Number, angle: f32, start_point: Poin
 
     for (i, line) in number.lines.iter_mut().enumerate() {
         for (j, point) in line.controll_points.iter_mut().enumerate() {
+            // if i == 0 && j == 0 {
+            //     continue;
+            // }
             rotate(point, angle);
         }
     }
 
-    for curve in number.bezier_curves.iter_mut() {
+    for (curve) in number.bezier_curves.iter_mut() {
         for point in curve.controll_points.iter_mut() {
             rotate(point, angle);
         }

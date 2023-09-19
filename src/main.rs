@@ -56,7 +56,7 @@ pub fn main() {
         }
 
         let mut number_series =
-            numbers::NumberSeries::new(100, 100, String::from("123"), 0.1, 0.2805);
+            numbers::NumberSeries::new(100,0, String::from("123"), 0.1, 0.1);
         angle = angle + 0.001;
 
         for num in number_series.numbers.iter_mut() {
