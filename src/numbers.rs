@@ -3,6 +3,9 @@ use sdl2::rect::Point;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
+const DEFAULT_NUM_WIDTH: i32 = 80;
+const DEFAULT_NUM_HEIGHT: i32 = 120;
+
 pub struct NumberSeries {
     pub x: i32,
     pub y: i32,
@@ -11,26 +14,28 @@ pub struct NumberSeries {
 }
 
 impl NumberSeries {
-    pub fn new(x: i32, y: i32, number_str: String) -> Self {
+    pub fn new(x: i32, y: i32, number_str: String, scale: f32, angle: f32) -> Self {
         if number_str.is_empty() {
             panic!("Empty number string!!!!");
         }
 
         let mut numbers: Vec<Number> = Vec::new();
 
-        let mut num_x = x + 80;
+        let num_x = DEFAULT_NUM_WIDTH;
         for (i, c) in number_str.chars().enumerate() {
-            println!("{}", num_x * i as i32);
             numbers.push(create_digit(c, num_x * i as i32, y).unwrap()); // TODO: at least treat the fucking error
         }
 
         for (i, number) in numbers.iter_mut().enumerate() {
-            translate_number(number, number.x, 0);
+            translate_number(number, number.x + x, number.y + y);
         }
 
+        // for (i, num) in numbers.iter_mut().enumerate() {
+        //     graphics::scale_number(num, scale, Point::new(x, y));
+        // }
 
-        for num in numbers.iter_mut() {
-            graphics::scale_number(num, 2.0, Point::new(0, 0));
+        for (i, num) in numbers.iter_mut().enumerate() {
+            graphics::rotate_number(num, angle, Point::new(x, y));
         }
 
         NumberSeries {
@@ -111,8 +116,8 @@ pub fn create_digit(number: char, x: i32, y: i32) -> Option<Number> {
 }
 
 pub fn create_digit_0(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
@@ -158,27 +163,39 @@ pub fn create_digit_0(x: i32, y: i32) -> Number {
 }
 
 pub fn create_digit_1(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
 
     lines.push(Line::new(vec![Point::new(32, 20), Point::new(10, 55)]));
     lines.push(Line::new(vec![Point::new(10, 55), Point::new(32, 55)]));
     lines.push(Line::new(vec![Point::new(32, 20), Point::new(53, 20)]));
-    lines.push(Line::new(vec![Point::new(53, 20), Point::new(53, 120)]));
-    lines.push(Line::new(vec![Point::new(32, 55), Point::new(32, 120)]));
+    lines.push(Line::new(vec![
+        Point::new(53, 20),
+        Point::new(53, DEFAULT_NUM_HEIGHT),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(32, 55),
+        Point::new(32, DEFAULT_NUM_HEIGHT),
+    ]));
 
-    lines.push(Line::new(vec![Point::new(32, 55), Point::new(32, 120)]));
+    lines.push(Line::new(vec![
+        Point::new(32, 55),
+        Point::new(32, DEFAULT_NUM_HEIGHT),
+    ]));
 
-    lines.push(Line::new(vec![Point::new(32, 120), Point::new(54, 120)]));
+    lines.push(Line::new(vec![
+        Point::new(32, DEFAULT_NUM_HEIGHT),
+        Point::new(54, DEFAULT_NUM_HEIGHT),
+    ]));
 
     Number::new('1', w, h, x, y, Point::new(40, 30), Some(lines), None)
 }
 
 pub fn create_digit_2(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
@@ -206,7 +223,7 @@ pub fn create_digit_2(x: i32, y: i32) -> Number {
 
     bezier_curves.push(CubicBezierCurve::new(vec![
         Point::new(40 + (w / 2) - 5, 50),
-        Point::new(40 + (w / 2) - 5, 80),
+        Point::new(40 + (w / 2) - 5, DEFAULT_NUM_WIDTH),
         Point::new(40 - (w / 2) + 58, 85),
         Point::new(40 - (w / 2) + 40, 100),
     ]));
@@ -254,8 +271,8 @@ pub fn create_digit_2(x: i32, y: i32) -> Number {
 }
 
 pub fn create_digit_3(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
@@ -314,32 +331,65 @@ pub fn create_digit_3(x: i32, y: i32) -> Number {
 }
 
 pub fn create_digit_4(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
 
-    lines.push(Line::new(vec![Point::new(40, 20), Point::new(10, 80)]));
-    lines.push(Line::new(vec![Point::new(40, 45), Point::new(25, 80)]));
-    lines.push(Line::new(vec![Point::new(40, 45), Point::new(40, 80)]));
-    lines.push(Line::new(vec![Point::new(25, 80), Point::new(40, 80)]));
-    lines.push(Line::new(vec![Point::new(10, 80), Point::new(10, 90)]));
+    lines.push(Line::new(vec![
+        Point::new(40, 20),
+        Point::new(10, DEFAULT_NUM_WIDTH),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(40, 45),
+        Point::new(25, DEFAULT_NUM_WIDTH),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(40, 45),
+        Point::new(40, DEFAULT_NUM_WIDTH),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(25, DEFAULT_NUM_WIDTH),
+        Point::new(40, DEFAULT_NUM_WIDTH),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(10, DEFAULT_NUM_WIDTH),
+        Point::new(10, 90),
+    ]));
     lines.push(Line::new(vec![Point::new(10, 90), Point::new(40, 90)]));
-    lines.push(Line::new(vec![Point::new(40, 90), Point::new(40, 120)]));
+    lines.push(Line::new(vec![
+        Point::new(40, 90),
+        Point::new(40, DEFAULT_NUM_HEIGHT),
+    ]));
     lines.push(Line::new(vec![Point::new(40, 20), Point::new(55, 20)]));
-    lines.push(Line::new(vec![Point::new(55, 20), Point::new(55, 80)]));
-    lines.push(Line::new(vec![Point::new(55, 80), Point::new(65, 80)]));
-    lines.push(Line::new(vec![Point::new(65, 80), Point::new(65, 90)]));
+    lines.push(Line::new(vec![
+        Point::new(55, 20),
+        Point::new(55, DEFAULT_NUM_WIDTH),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(55, DEFAULT_NUM_WIDTH),
+        Point::new(65, DEFAULT_NUM_WIDTH),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(65, DEFAULT_NUM_WIDTH),
+        Point::new(65, 90),
+    ]));
     lines.push(Line::new(vec![Point::new(65, 90), Point::new(55, 90)]));
-    lines.push(Line::new(vec![Point::new(55, 90), Point::new(55, 120)]));
-    lines.push(Line::new(vec![Point::new(55, 120), Point::new(40, 120)]));
+    lines.push(Line::new(vec![
+        Point::new(55, 90),
+        Point::new(55, DEFAULT_NUM_HEIGHT),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(55, DEFAULT_NUM_HEIGHT),
+        Point::new(40, DEFAULT_NUM_HEIGHT),
+    ]));
 
     Number::new('4', w, h, x, y, Point::new(40, 15), Some(lines), None)
 }
 
 pub fn create_digit_5(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
@@ -395,8 +445,8 @@ pub fn create_digit_5(x: i32, y: i32) -> Number {
 }
 
 pub fn create_digit_6(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
@@ -405,11 +455,11 @@ pub fn create_digit_6(x: i32, y: i32) -> Number {
         Point::new(30, 20),
         Point::new(14, 50),
         Point::new(12, 60),
-        Point::new(10, 80),
+        Point::new(10, DEFAULT_NUM_WIDTH),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(10, 80),
+        Point::new(10, DEFAULT_NUM_WIDTH),
         Point::new(15, 130),
         Point::new(65, 130),
         Point::new(70, 90),
@@ -458,8 +508,8 @@ pub fn create_digit_6(x: i32, y: i32) -> Number {
 }
 
 pub fn create_digit_7(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
 
@@ -470,16 +520,25 @@ pub fn create_digit_7(x: i32, y: i32) -> Number {
     lines.push(Line::new(vec![Point::new(25, 30), Point::new(25, 40)]));
     lines.push(Line::new(vec![Point::new(25, 40), Point::new(10, 40)]));
     lines.push(Line::new(vec![Point::new(10, 40), Point::new(10, 20)]));
-    lines.push(Line::new(vec![Point::new(70, 30), Point::new(25, 120)]));
-    lines.push(Line::new(vec![Point::new(55, 30), Point::new(10, 120)]));
-    lines.push(Line::new(vec![Point::new(10, 120), Point::new(25, 120)]));
+    lines.push(Line::new(vec![
+        Point::new(70, 30),
+        Point::new(25, DEFAULT_NUM_HEIGHT),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(55, 30),
+        Point::new(10, DEFAULT_NUM_HEIGHT),
+    ]));
+    lines.push(Line::new(vec![
+        Point::new(10, DEFAULT_NUM_HEIGHT),
+        Point::new(25, DEFAULT_NUM_HEIGHT),
+    ]));
 
     Number::new('7', w, h, x, y, Point::new(40, 15), Some(lines), None)
 }
 
 pub fn create_digit_8(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
@@ -498,59 +557,59 @@ pub fn create_digit_8(x: i32, y: i32) -> Number {
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 30, 20),
-        Point::new(80 - 10, 30),
-        Point::new(80 - 10, 60),
-        Point::new(80 - 30, 70),
+        Point::new(DEFAULT_NUM_WIDTH - 30, 20),
+        Point::new(DEFAULT_NUM_WIDTH - 10, 30),
+        Point::new(DEFAULT_NUM_WIDTH - 10, 60),
+        Point::new(DEFAULT_NUM_WIDTH - 30, 70),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(30, (120 - 20) + 18),
-        Point::new(10, (120 - 30) + 18),
-        Point::new(10, (120 - 60) + 18),
-        Point::new(30, (120 - 70) + 18),
+        Point::new(30, (DEFAULT_NUM_HEIGHT - 20) + 18),
+        Point::new(10, (DEFAULT_NUM_HEIGHT - 30) + 18),
+        Point::new(10, (DEFAULT_NUM_HEIGHT - 60) + 18),
+        Point::new(30, (DEFAULT_NUM_HEIGHT - 70) + 18),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 30, (120 - 20) + 18),
-        Point::new(80 - 10, (120 - 30) + 18),
-        Point::new(80 - 10, (120 - 60) + 18),
-        Point::new(80 - 30, (120 - 70) + 18),
+        Point::new(DEFAULT_NUM_WIDTH - 30, (DEFAULT_NUM_HEIGHT - 20) + 18),
+        Point::new(DEFAULT_NUM_WIDTH - 10, (DEFAULT_NUM_HEIGHT - 30) + 18),
+        Point::new(DEFAULT_NUM_WIDTH - 10, (DEFAULT_NUM_HEIGHT - 60) + 18),
+        Point::new(DEFAULT_NUM_WIDTH - 30, (DEFAULT_NUM_HEIGHT - 70) + 18),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(30, (120 - 20) + 18),
-        Point::new(35, (120 - 17) + 18),
-        Point::new(45, (120 - 17) + 18),
-        Point::new(50, (120 - 20) + 18),
+        Point::new(30, (DEFAULT_NUM_HEIGHT - 20) + 18),
+        Point::new(35, (DEFAULT_NUM_HEIGHT - 17) + 18),
+        Point::new(45, (DEFAULT_NUM_HEIGHT - 17) + 18),
+        Point::new(50, (DEFAULT_NUM_HEIGHT - 20) + 18),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 25, 45),
-        Point::new(80 - 30, 25),
-        Point::new(80 - 50, 25),
-        Point::new(80 - 55, 45),
+        Point::new(DEFAULT_NUM_WIDTH - 25, 45),
+        Point::new(DEFAULT_NUM_WIDTH - 30, 25),
+        Point::new(DEFAULT_NUM_WIDTH - 50, 25),
+        Point::new(DEFAULT_NUM_WIDTH - 55, 45),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 25, 45),
-        Point::new(80 - 30, 65),
-        Point::new(80 - 50, 65),
-        Point::new(80 - 55, 45),
+        Point::new(DEFAULT_NUM_WIDTH - 25, 45),
+        Point::new(DEFAULT_NUM_WIDTH - 30, 65),
+        Point::new(DEFAULT_NUM_WIDTH - 50, 65),
+        Point::new(DEFAULT_NUM_WIDTH - 55, 45),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 25, 140 - 45),
-        Point::new(80 - 30, 140 - 25),
-        Point::new(80 - 50, 140 - 25),
-        Point::new(80 - 55, 140 - 45),
+        Point::new(DEFAULT_NUM_WIDTH - 25, 140 - 45),
+        Point::new(DEFAULT_NUM_WIDTH - 30, 140 - 25),
+        Point::new(DEFAULT_NUM_WIDTH - 50, 140 - 25),
+        Point::new(DEFAULT_NUM_WIDTH - 55, 140 - 45),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 25, 140 - 45),
-        Point::new(80 - 30, 140 - 65),
-        Point::new(80 - 50, 140 - 65),
-        Point::new(80 - 55, 140 - 45),
+        Point::new(DEFAULT_NUM_WIDTH - 25, 140 - 45),
+        Point::new(DEFAULT_NUM_WIDTH - 30, 140 - 65),
+        Point::new(DEFAULT_NUM_WIDTH - 50, 140 - 65),
+        Point::new(DEFAULT_NUM_WIDTH - 55, 140 - 45),
     ]));
 
     Number::new(
@@ -566,57 +625,63 @@ pub fn create_digit_8(x: i32, y: i32) -> Number {
 }
 
 pub fn create_digit_9(x: i32, y: i32) -> Number {
-    let w = 80;
-    let h = 120;
+    let w = DEFAULT_NUM_WIDTH;
+    let h = DEFAULT_NUM_HEIGHT;
 
     let mut lines: Vec<Line> = Vec::new();
     let mut bezier_curves: Vec<CubicBezierCurve> = Vec::new();
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 30, 120),
-        Point::new(80 - 14, (120 - 50) + 20),
-        Point::new(80 - 12, (120 - 60) + 20),
-        Point::new(80 - 10, (120 - 80) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 30, DEFAULT_NUM_HEIGHT),
+        Point::new(DEFAULT_NUM_WIDTH - 14, (DEFAULT_NUM_HEIGHT - 50) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 12, (DEFAULT_NUM_HEIGHT - 60) + 20),
+        Point::new(
+            DEFAULT_NUM_WIDTH - 10,
+            (DEFAULT_NUM_HEIGHT - DEFAULT_NUM_WIDTH) + 20,
+        ),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 10, (120 - 80) + 20),
-        Point::new(80 - 15, (120 - 130) + 20),
-        Point::new(80 - 65, (120 - 130) + 20),
-        Point::new(80 - 70, (120 - 90) + 20),
+        Point::new(
+            DEFAULT_NUM_WIDTH - 10,
+            (DEFAULT_NUM_HEIGHT - DEFAULT_NUM_WIDTH) + 20,
+        ),
+        Point::new(DEFAULT_NUM_WIDTH - 15, (DEFAULT_NUM_HEIGHT - 130) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 65, (DEFAULT_NUM_HEIGHT - 130) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 70, (DEFAULT_NUM_HEIGHT - 90) + 20),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 70, (120 - 90) + 20),
-        Point::new(80 - 69, (120 - 55) + 20),
-        Point::new(80 - 35, (120 - 55) + 20),
-        Point::new(80 - 30, (120 - 60) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 70, (DEFAULT_NUM_HEIGHT - 90) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 69, (DEFAULT_NUM_HEIGHT - 55) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 35, (DEFAULT_NUM_HEIGHT - 55) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 30, (DEFAULT_NUM_HEIGHT - 60) + 20),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 30, (120 - 60) + 20),
-        Point::new(80 - 33, (120 - 50) + 20),
-        Point::new(80 - 36, (120 - 30) + 20),
-        Point::new(80 - 43, 120),
+        Point::new(DEFAULT_NUM_WIDTH - 30, (DEFAULT_NUM_HEIGHT - 60) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 33, (DEFAULT_NUM_HEIGHT - 50) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 36, (DEFAULT_NUM_HEIGHT - 30) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 43, DEFAULT_NUM_HEIGHT),
     ]));
 
     lines.push(Line::new(vec![
-        Point::new(80 - 43, 120),
-        Point::new(80 - 30, 120),
+        Point::new(DEFAULT_NUM_WIDTH - 43, DEFAULT_NUM_HEIGHT),
+        Point::new(DEFAULT_NUM_WIDTH - 30, DEFAULT_NUM_HEIGHT),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 25, (120 - 90) + 20),
-        Point::new(80 - 30, (120 - 110) + 20),
-        Point::new(80 - 50, (120 - 110) + 20),
-        Point::new(80 - 55, (120 - 90) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 25, (DEFAULT_NUM_HEIGHT - 90) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 30, (DEFAULT_NUM_HEIGHT - 110) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 50, (DEFAULT_NUM_HEIGHT - 110) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 55, (DEFAULT_NUM_HEIGHT - 90) + 20),
     ]));
 
     bezier_curves.push(CubicBezierCurve::new(vec![
-        Point::new(80 - 25, (120 - 90) + 20),
-        Point::new(80 - 30, (120 - 70) + 20),
-        Point::new(80 - 50, (120 - 70) + 20),
-        Point::new(80 - 55, (120 - 90) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 25, (DEFAULT_NUM_HEIGHT - 90) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 30, (DEFAULT_NUM_HEIGHT - 70) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 50, (DEFAULT_NUM_HEIGHT - 70) + 20),
+        Point::new(DEFAULT_NUM_WIDTH - 55, (DEFAULT_NUM_HEIGHT - 90) + 20),
     ]));
 
     Number::new(

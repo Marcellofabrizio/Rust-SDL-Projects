@@ -7,12 +7,16 @@ use std::time::Duration;
 mod graphics;
 mod numbers;
 mod sdl_to_bmp;
+
+const W: u32 = 840;
+const H: u32 = 680;
+
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem
-        .window("rust-sdl2 demo", 840, 680)
+        .window("rust-sdl2 demo", W, H)
         .position_centered()
         .build()
         .unwrap();
@@ -24,11 +28,11 @@ pub fn main() {
 
     let mut event_pump = sdl_context.event_pump().unwrap();
 
-    // let mut number_series: Vec<numbers::NumberSeries> = Vec::new();
-    let mut number_series = numbers::NumberSeries::new(0, 0, "0123456789".to_string());
-
     canvas.set_draw_color(Color::RGB(255, 255, 255));
     canvas.clear();
+
+    let mut angle = 0.0;
+
     'running: loop {
         canvas.set_draw_color(Color::RGB(0, 0, 0));
 
@@ -51,9 +55,9 @@ pub fn main() {
             }
         }
 
-        // let mut num = numbers::create_digit('9').unwrap();
-        // graphics::translate_number(&mut num, 400, 200);
-        // num.draw(&mut canvas);
+        let mut number_series =
+            numbers::NumberSeries::new(100, 100, String::from("123"), 0.1, 0.2805);
+        angle = angle + 0.001;
 
         for num in number_series.numbers.iter_mut() {
             num.draw(&mut canvas, false);
@@ -71,8 +75,8 @@ pub fn main() {
                 .create_texture(
                     sdl2::pixels::PixelFormatEnum::ARGB8888,
                     sdl2::render::TextureAccess::Streaming,
-                    840,
-                    680,
+                    W,
+                    H,
                 )
                 .unwrap();
 
@@ -80,6 +84,9 @@ pub fn main() {
                 .expect("Failed to save BMP file");
             println!("Canvas saved as 'output.bmp'");
         }
+
+        canvas.set_draw_color(Color::RGB(255, 255, 255));
+        canvas.clear();
 
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
