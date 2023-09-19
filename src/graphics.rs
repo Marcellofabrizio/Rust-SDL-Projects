@@ -342,4 +342,31 @@ pub fn translate_number(number: &mut numbers::Number, d: i32, e: i32) {
 pub fn translate(point: &mut Point, d: i32, e: i32) {
     point.x = point.x + d;
     point.y = point.y + e;
+    println!("Translated to: x {} y: {}", point.x, point.y);
+
+}
+
+pub fn scale_number(number: &mut numbers::Number, s: f32, start_point: Point) {
+    println!("Translating to: x {} y: {}", start_point.x * -1, start_point.y * -1);
+    translate_number(number, start_point.x * -1, start_point.y * -1);
+
+    for line in number.lines.iter_mut() {
+        for point in line.controll_points.iter_mut() {
+            scale(point, s);
+        }
+    }
+
+    for curve in number.bezier_curves.iter_mut() {
+        for point in curve.controll_points.iter_mut() {
+            scale(point, s);
+        }
+    }
+
+    // println!("Translating to: x {} y: {}", start_point.x, start_point.y);
+    translate_number(number, start_point.x, start_point.y);
+}
+
+pub fn scale(point: &mut Point, s: f32) {
+    point.x = (point.x as f32 * s) as i32;
+    point.y = (point.y as f32 * s) as i32;
 }

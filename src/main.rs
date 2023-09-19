@@ -56,7 +56,7 @@ pub fn main() {
         // num.draw(&mut canvas);
 
         for num in number_series.numbers.iter_mut() {
-            num.draw(&mut canvas, true);
+            num.draw(&mut canvas, false);
         }
 
         canvas.present();
