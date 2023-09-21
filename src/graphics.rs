@@ -346,6 +346,7 @@ pub fn translate(point: &mut Point, d: i32, e: i32) {
 
 pub fn scale_number(number: &mut numbers::Number, s: f32, start_point: Point) {
     translate_number(number, start_point.x * -1, start_point.y * -1);
+    translate(&mut number.center, start_point.x * -1, start_point.y * -1);
 
     for line in number.lines.iter_mut() {
         for point in line.controll_points.iter_mut() {
@@ -359,7 +360,10 @@ pub fn scale_number(number: &mut numbers::Number, s: f32, start_point: Point) {
         }
     }
 
+    // scale(&mut number.center, s);
+
     translate_number(number, start_point.x, start_point.y);
+    translate(&mut number.center, start_point.x, start_point.y);
 }
 
 pub fn scale(point: &mut Point, s: f32) {
@@ -372,9 +376,6 @@ pub fn rotate_number(number: &mut numbers::Number, angle: f32, start_point: Poin
 
     for (i, line) in number.lines.iter_mut().enumerate() {
         for (j, point) in line.controll_points.iter_mut().enumerate() {
-            // if i == 0 && j == 0 {
-            //     continue;
-            // }
             rotate(point, angle);
         }
     }

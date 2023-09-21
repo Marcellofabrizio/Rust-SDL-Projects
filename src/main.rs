@@ -1,6 +1,6 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::pixels::Color;
+use sdl2::pixels::{Color, PixelFormat, PixelFormatEnum};
 use sdl2::rect::Point;
 use std::time::Duration;
 
@@ -45,7 +45,15 @@ pub fn main() {
                 } => break 'running,
                 Event::MouseButtonDown { x, y, .. } => {
                     println!("Clicked at {x}, {y}");
-                    graphics::flood_fill(Point::new(x, y), 0, &mut canvas)
+                    graphics::flood_fill(
+                        Point::new(x, y),
+                        Color::RGB(255, 0, 0).to_u32(unsafe {
+                            &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
+                                PixelFormatEnum::ARGB8888 as u32, // https://github.com/Rust-SDL2/rust-sdl2/issues/840
+                            ))
+                        }),
+                        &mut canvas,
+                    )
                 }
                 Event::KeyDown {
                     keycode: Some(keycode),
@@ -55,13 +63,16 @@ pub fn main() {
             }
         }
 
-        let mut number_series =
-            numbers::NumberSeries::new(100,0, String::from("123"), 0.1, 0.1);
+        let mut number_series = numbers::NumberSeries::new(100, 0, String::from("0123456789"), 0.7, 0.0);
+        let mut number_series_2 = numbers::NumberSeries::new(400, 100, String::from("0123456789"), 1.3, 0.45);
+
+
+
         angle = angle + 0.001;
 
-        for num in number_series.numbers.iter_mut() {
-            num.draw(&mut canvas, false);
-        }
+        number_series.draw(&mut canvas, false);
+
+        number_series_2.draw(&mut canvas, false);
 
         canvas.present();
 
@@ -85,8 +96,8 @@ pub fn main() {
             println!("Canvas saved as 'output.bmp'");
         }
 
-        canvas.set_draw_color(Color::RGB(255, 255, 255));
-        canvas.clear();
+        // canvas.set_draw_color(Color::RGB(255, 255, 255));
+        // canvas.clear();
 
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }

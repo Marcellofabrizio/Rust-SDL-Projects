@@ -30,9 +30,9 @@ impl NumberSeries {
             translate_number(number, number.x + x, number.y + y);
         }
 
-        // for (i, num) in numbers.iter_mut().enumerate() {
-        //     graphics::scale_number(num, scale, Point::new(x, y));
-        // }
+        for (i, num) in numbers.iter_mut().enumerate() {
+            graphics::scale_number(num, scale, Point::new(x, y));
+        }
 
         for (i, num) in numbers.iter_mut().enumerate() {
             graphics::rotate_number(num, angle, Point::new(x, y));
@@ -43,6 +43,12 @@ impl NumberSeries {
             y: y,
             number_str: number_str,
             numbers: numbers,
+        }
+    }
+
+    pub fn draw(&mut self, canvas: &mut Canvas<Window>, fill: bool) {
+        for num in self.numbers.iter_mut() {
+            num.draw(canvas, fill);
         }
     }
 }
@@ -91,7 +97,7 @@ impl Number {
         }
 
         if fill {
-            graphics::flood_fill(self.center, 0, canvas);
+            graphics::flood_fill(Point::new(self.x, self.y), 0, canvas);
         }
     }
 }
