@@ -167,6 +167,12 @@ pub fn draw_point(x: i32, y: i32, c: f32, canvas: &mut Canvas<Window>) {
         .expect("Drawing point failed");
 }
 
+pub fn draw_target(point: Point, canvas: &mut Canvas<Window>) {
+    canvas
+        .filled_circle(point.x as i16, point.y as i16, 3, Color::RGB(255, 0, 0))
+        .unwrap();
+}
+
 pub fn draw_line(p_1: Point, p_2: Point, canvas: &mut Canvas<Window>) {
     let mut x0 = p_1.x;
     let mut y0 = p_1.y;
@@ -390,6 +396,7 @@ pub fn rotate_number(number: &mut numbers::Number, angle: f32, start_point: Poin
 }
 
 pub fn rotate(point: &mut Point, angle: f32) {
+    let old_x = point.x;
     point.x = (point.x as f32 * angle.cos() - point.y as f32 * angle.sin()) as i32;
-    point.y = (point.x as f32 * angle.sin() + point.y as f32 * angle.cos()) as i32;
+    point.y = (old_x as f32 * angle.sin() + point.y as f32 * angle.cos()) as i32;
 }

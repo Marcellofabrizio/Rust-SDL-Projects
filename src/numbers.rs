@@ -27,7 +27,7 @@ impl NumberSeries {
         }
 
         for (i, number) in numbers.iter_mut().enumerate() {
-            translate_number(number, number.x + x, number.y + y);
+            translate_number(number, number.x + x, y);
         }
 
         for (i, num) in numbers.iter_mut().enumerate() {
@@ -37,7 +37,7 @@ impl NumberSeries {
         for (i, num) in numbers.iter_mut().enumerate() {
             graphics::rotate_number(num, angle, Point::new(x, y));
         }
-
+        
         NumberSeries {
             x: x,
             y: y,
@@ -45,7 +45,7 @@ impl NumberSeries {
             numbers: numbers,
         }
     }
-
+    
     pub fn draw(&mut self, canvas: &mut Canvas<Window>, fill: bool) {
         for num in self.numbers.iter_mut() {
             num.draw(canvas, fill);

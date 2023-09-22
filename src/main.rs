@@ -63,12 +63,17 @@ pub fn main() {
             }
         }
 
-        let mut number_series = numbers::NumberSeries::new(100, 0, String::from("0123456789"), 0.7, 0.0);
-        let mut number_series_2 = numbers::NumberSeries::new(400, 100, String::from("0123456789"), 1.3, 0.45);
+        let mut number_series =
+            numbers::NumberSeries::new(100, 0, String::from("0123456789"), 0.7, 0.0);
+        let mut number_series_2 = numbers::NumberSeries::new(
+            400,
+            200,
+            String::from("2245"),
+            0.7,
+            180.0 * 0.017453293,
+        );
 
-
-
-        angle = angle + 0.001;
+        angle = angle + 1.0;
 
         number_series.draw(&mut canvas, false);
 
@@ -95,9 +100,6 @@ pub fn main() {
                 .expect("Failed to save BMP file");
             println!("Canvas saved as 'output.bmp'");
         }
-
-        // canvas.set_draw_color(Color::RGB(255, 255, 255));
-        // canvas.clear();
 
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
