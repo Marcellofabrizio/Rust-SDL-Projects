@@ -64,14 +64,9 @@ pub fn main() {
         }
 
         let mut number_series =
-            numbers::NumberSeries::new(100, 0, String::from("0123456789"), 0.7, 0.0);
-        let mut number_series_2 = numbers::NumberSeries::new(
-            400,
-            200,
-            String::from("2245"),
-            0.7,
-            180.0 * 0.017453293,
-        );
+            numbers::NumberSeries::new(100, 200, String::from("6789"), 0.7, 45.0 * 0.017453293);
+        let mut number_series_2 =
+            numbers::NumberSeries::new(430, 200, String::from("2245"), 0.7, 120.0 * 0.017453293);
 
         angle = angle + 1.0;
 
