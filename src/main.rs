@@ -47,11 +47,8 @@ pub fn main() {
                     println!("Clicked at {x}, {y}");
                     graphics::flood_fill(
                         Point::new(x, y),
-                        Color::RGB(255, 0, 0).to_u32(unsafe {
-                            &PixelFormat::from_ll(sdl2::sys::SDL_AllocFormat(
-                                PixelFormatEnum::ARGB8888 as u32, // https://github.com/Rust-SDL2/rust-sdl2/issues/840
-                            ))
-                        }),
+                        Color::RGB(255, 0, 0)
+                            .to_u32(&PixelFormat::try_from(PixelFormatEnum::ARGB8888).unwrap()),
                         &mut canvas,
                     )
                 }
